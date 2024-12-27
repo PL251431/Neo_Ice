@@ -7,8 +7,10 @@ environment:
   sdk: ^3.5.4
 
 dependencies:
+  drift: ^2.23.0
   flutter:
     sdk: flutter
+  riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:
