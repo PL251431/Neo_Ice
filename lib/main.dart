@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
-import 'screens/listar_produtos.dart'; // Importe a tela
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:neo_ice/riverpod.dart';
+import 'package:neo_ice/screens/initial_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    Brightness brightness =
+        ref.watch(lightMode) ? Brightness.light : Brightness.dark;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'App da Sorveteria',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const ListarProdutosPage(), // Inicializar com a tela de produtos
+      theme: ThemeData(brightness: brightness),
+      home: const InitialScreen(),
     );
   }
 }
