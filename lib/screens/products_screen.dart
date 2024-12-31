@@ -3,15 +3,15 @@ import 'package:neo_ice/database/app_database.dart'; // Importe o banco de dados
 import 'package:drift/drift.dart' as drift;
 
 
-class ListarProdutosPage extends StatefulWidget {
-  const ListarProdutosPage({super.key});
+class ProductsScreen extends StatefulWidget {
+  const ProductsScreen({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _ListarProdutosPageState createState() => _ListarProdutosPageState();
+  _ProductsScreenState createState() => _ProductsScreenState();
 }
 
-class _ListarProdutosPageState extends State<ListarProdutosPage> {
+class _ProductsScreenState extends State<ProductsScreen> {
   
   final AppDatabase db = AppDatabase(); // Instância do banco de dados
   late Future<List<Produto>> produtosFuture; // Lista de produtos futura
