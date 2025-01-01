@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:neo_ice/database/app_database.dart';
-import 'package:drift/drift.dart' as drift;
+import 'package:neo_ice/screens/add_products.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProductsScreenState createState() => _ProductsScreenState();
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  
   final AppDatabase db = AppDatabase();
   late Future<List<Produto>> produtosFuture;
 
@@ -52,7 +52,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   onBackgroundImageError: (_, __) => const Icon(Icons.image),
                 ),
                 title: Text(produto.nome),
-                subtitle: Text('Preço: R\$ ${produto.valor.toStringAsFixed(2)}'),
+                subtitle:
+                    Text('Preço: R\$ ${produto.valor.toStringAsFixed(2)}'),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () async {
@@ -68,15 +69,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await db.inserirProduto(ProdutosCompanion(
-            nome: drift.Value('Novo Produto'),
-            valor: drift.Value(10.00),
-            imagem: drift.Value(
-                'https://via.placeholder.com/150'),
-          ));
-          setState(() {
-            produtosFuture = db.listarProdutos();
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AdicionarProdutoPage(db: db),
+            ),
+          ).then((_) {
+            // Atualiza a lista de produtos após voltar do formulário
+            setState(() {
+              produtosFuture = db.listarProdutos();
+            });
           });
         },
         child: const Icon(Icons.add),
