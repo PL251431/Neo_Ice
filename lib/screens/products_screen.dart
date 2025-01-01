@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:neo_ice/database/app_database.dart'; // Importe o banco de dados
-import 'package:drift/drift.dart' as drift;
-
+import 'package:neo_ice/database/app_database.dart';
+import 'package:neo_ice/screens/add_products.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -12,14 +11,13 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  
-  final AppDatabase db = AppDatabase(); // Instância do banco de dados
-  late Future<List<Produto>> produtosFuture; // Lista de produtos futura
+  final AppDatabase db = AppDatabase();
+  late Future<List<Produto>> produtosFuture;
 
   @override
   void initState() {
     super.initState();
-    produtosFuture = db.listarProdutos(); // Carregar os produtos ao iniciar
+    produtosFuture = db.listarProdutos();
   }
 
   @override
@@ -54,13 +52,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   onBackgroundImageError: (_, __) => const Icon(Icons.image),
                 ),
                 title: Text(produto.nome),
-                subtitle: Text('Preço: R\$ ${produto.valor.toStringAsFixed(2)}'),
+                subtitle:
+                    Text('Preço: R\$ ${produto.valor.toStringAsFixed(2)}'),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () async {
                     await db.excluirProduto(produto.id);
                     setState(() {
-                      produtosFuture = db.listarProdutos(); // Atualizar lista
+                      produtosFuture = db.listarProdutos();
                     });
                   },
                 ),
@@ -70,16 +69,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // Exemplo de adicionar um produto
-          await db.inserirProduto(ProdutosCompanion(
-            nome: drift.Value('Novo Produto'),
-            valor: drift.Value(10.00),
-            imagem: drift.Value(
-                'https://via.placeholder.com/150'), // URL da imagem placeholder
-          ));
-          setState(() {
-            produtosFuture = db.listarProdutos(); // Atualizar lista
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AdicionarProdutoPage(db: db),
+            ),
+          ).then((_) {
+            // Atualiza a lista de produtos após voltar do formulário
+            setState(() {
+              produtosFuture = db.listarProdutos();
+            });
           });
         },
         child: const Icon(Icons.add),
