@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:neo_ice/database/app_database.dart'; // Importe o banco de dados
+import 'package:neo_ice/database/app_database.dart';
 import 'package:drift/drift.dart' as drift;
-
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ProductsScreenState createState() => _ProductsScreenState();
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
   
-  final AppDatabase db = AppDatabase(); // Instância do banco de dados
-  late Future<List<Produto>> produtosFuture; // Lista de produtos futura
+  final AppDatabase db = AppDatabase();
+  late Future<List<Produto>> produtosFuture;
 
   @override
   void initState() {
     super.initState();
-    produtosFuture = db.listarProdutos(); // Carregar os produtos ao iniciar
+    produtosFuture = db.listarProdutos();
   }
 
   @override
@@ -60,7 +58,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   onPressed: () async {
                     await db.excluirProduto(produto.id);
                     setState(() {
-                      produtosFuture = db.listarProdutos(); // Atualizar lista
+                      produtosFuture = db.listarProdutos();
                     });
                   },
                 ),
@@ -71,15 +69,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // Exemplo de adicionar um produto
           await db.inserirProduto(ProdutosCompanion(
             nome: drift.Value('Novo Produto'),
             valor: drift.Value(10.00),
             imagem: drift.Value(
-                'https://via.placeholder.com/150'), // URL da imagem placeholder
+                'https://via.placeholder.com/150'),
           ));
           setState(() {
-            produtosFuture = db.listarProdutos(); // Atualizar lista
+            produtosFuture = db.listarProdutos();
           });
         },
         child: const Icon(Icons.add),
