@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:neo_ice/database/app_database.dart';
 import 'package:neo_ice/screens/add_products.dart';
+import 'dart:io';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -44,8 +45,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
             itemBuilder: (context, index) {
               final produto = produtos[index];
               return ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(produto.imagem),
+                leading: CircleAvatar(backgroundImage: produto.imagem.startsWith('http')
+                      ? NetworkImage(
+                          produto.imagem) // Caso a imagem seja uma URL
+                      : FileImage(File(produto.imagem))
+                          as ImageProvider,
                   onBackgroundImageError: (_, __) => const Icon(Icons.image),
                 ),
                 title: Text(produto.nome),
