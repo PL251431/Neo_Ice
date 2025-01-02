@@ -19,6 +19,7 @@ dependencies:
   riverpod: ^2.6.1
   google_fonts:
   fl_chart: ^0.69.2
+  flex_color_scheme: ^8.0.2
 
 dev_dependencies:
   drift_dev: 
