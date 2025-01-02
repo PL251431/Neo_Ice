@@ -15,6 +15,7 @@ class MyApp extends ConsumerWidget {
     Brightness brightness =
         ref.watch(lightMode) ? Brightness.light : Brightness.dark;
     return MaterialApp(
+      title: 'Neo Ice',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(brightness: brightness),
       home: const InitialScreen(),

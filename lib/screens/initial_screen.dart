@@ -36,18 +36,18 @@ class InitialScreen extends ConsumerWidget {
         ),
         body: screens[ref.watch(indexPage)],
         bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.inventory),
               label: 'Produtos',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.business),
+              icon: Icon(Icons.sell),
               label: 'Vendas',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.school),
-              label: 'Histórico',
+              icon: Icon(Icons.equalizer),
+              label: 'Monitoramento',
             ),
           ],
           currentIndex: ref.watch(indexPage),

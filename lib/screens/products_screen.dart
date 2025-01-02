@@ -23,9 +23,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Lista de Produtos'),
-      ),
       body: FutureBuilder<List<Produto>>(
         future: produtosFuture,
         builder: (context, snapshot) {
