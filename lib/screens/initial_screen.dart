@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neo_ice/providers/riverpod.dart';
 import 'package:neo_ice/screens/history_screen.dart';
 import 'package:neo_ice/screens/products_screen.dart';
-import 'package:neo_ice/screens/sale_add_screen.dart';
+import 'package:neo_ice/screens/listar_vendas_page.dart';
 
 class InitialScreen extends ConsumerWidget {
   const InitialScreen({super.key});
@@ -14,7 +14,7 @@ class InitialScreen extends ConsumerWidget {
 
     final List<Widget> screens = [
       const ListarProdutosPage(),
-      const SaleAddScreen(),
+      const ListarVendasPage(),
       const HistoryScreen(),
     ];
 

@@ -59,6 +59,16 @@ class AppDatabase extends _$AppDatabase {
     return (delete(produtos)..where((p) => p.id.equals(id))).go();
   }
 
+   // Método para listar vendas
+  Future<List<Venda>> listarVendas() => select(vendas).get();
+
+  // Método para inserir uma venda
+  Future<int> inserirVenda(VendasCompanion venda) => into(vendas).insert(venda);
+
+  // Método para excluir uma venda
+  Future<int> excluirVenda(int id) =>
+      (delete(vendas)..where((tbl) => tbl.id.equals(id))).go();
+      
   @override
   int get schemaVersion => 1; // Atualize conforme necessário
 }
