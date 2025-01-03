@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:neo_ice/riverpod.dart';
+import 'package:neo_ice/providers/riverpod.dart';
 import 'package:neo_ice/screens/history_screen.dart';
 import 'package:neo_ice/screens/products_screen.dart';
 import 'package:neo_ice/screens/sale_add_screen.dart';
@@ -13,7 +13,7 @@ class InitialScreen extends ConsumerWidget {
     bool mode = ref.watch(lightMode);
 
     final List<Widget> screens = [
-      const ProductsScreen(),
+      const ListarProdutosPage(),
       const SaleAddScreen(),
       const HistoryScreen(),
     ];
