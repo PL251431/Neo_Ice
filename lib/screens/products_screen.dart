@@ -20,25 +20,18 @@ class ListarProdutosPage extends ConsumerWidget {
               itemCount: produtos.length,
               itemBuilder: (context, index) {
                 final produto = produtos[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: produto.imagem.startsWith('http')
-                        ? NetworkImage(produto.imagem)
-                        : FileImage(File(produto.imagem)) as ImageProvider,
-                    onBackgroundImageError: (_, __) =>
-                        const Icon(Icons.image),
-                  ),
-                  title: Text(produto.nome),
-                  subtitle:
-                      Text('Preço: R\$ ${produto.valor.toStringAsFixed(2)}'),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      ref.read(produtoProvider.notifier).excluirProduto(
-                            produto.id,
-                          );
-                    },
-                  ),
+                final imageProvider =
+                    produto.imagem != null && File(produto.imagem!).existsSync()
+                        ? FileImage(File(produto.imagem!))
+                        : const AssetImage('assets/images/default.png')
+                            as ImageProvider<Object>;
+
+                return ProductCard(
+                  image: imageProvider,
+                  name: produto.nome,
+                  valor: produto.valor,
+                  qtd: 10,
+                  context: context,
                 );
               },
             ),
