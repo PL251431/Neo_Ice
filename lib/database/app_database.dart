@@ -19,8 +19,9 @@ class Produtos extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get nome => text().withLength(min: 1, max: 100)();
   RealColumn get valor => real()();
-  TextColumn get imagem => text().withLength(min: 1, max: 255)();
+  TextColumn get imagem => text().nullable().withLength(min: 1, max: 255)();
 }
+
 
 // Tabela de Vendedores
 class Vendedores extends Table {
@@ -59,7 +60,7 @@ class AppDatabase extends _$AppDatabase {
     return (delete(produtos)..where((p) => p.id.equals(id))).go();
   }
 
-   // Método para listar vendas
+  // Método para listar vendas
   Future<List<Venda>> listarVendas() => select(vendas).get();
 
   // Método para inserir uma venda
@@ -68,7 +69,7 @@ class AppDatabase extends _$AppDatabase {
   // Método para excluir uma venda
   Future<int> excluirVenda(int id) =>
       (delete(vendas)..where((tbl) => tbl.id.equals(id))).go();
-      
+
   @override
   int get schemaVersion => 1; // Atualize conforme necessário
 }
@@ -81,4 +82,3 @@ LazyDatabase _openConnection() {
     return NativeDatabase(file);
   });
 }
-

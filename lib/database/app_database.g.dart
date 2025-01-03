@@ -33,11 +33,8 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   static const VerificationMeta _imagemMeta = const VerificationMeta('imagem');
   @override
   late final GeneratedColumn<String> imagem = GeneratedColumn<String>(
-      'imagem', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 255),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
+      'imagem', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [id, nome, valor, imagem];
   @override
@@ -68,8 +65,6 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
     if (data.containsKey('imagem')) {
       context.handle(_imagemMeta,
           imagem.isAcceptableOrUnknown(data['imagem']!, _imagemMeta));
-    } else if (isInserting) {
-      context.missing(_imagemMeta);
     }
     return context;
   }
@@ -87,7 +82,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
       valor: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}valor'])!,
       imagem: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}imagem'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}imagem']),
     );
   }
 
@@ -101,19 +96,18 @@ class Produto extends DataClass implements Insertable<Produto> {
   final int id;
   final String nome;
   final double valor;
-  final String imagem;
+  final String? imagem;
   const Produto(
-      {required this.id,
-      required this.nome,
-      required this.valor,
-      required this.imagem});
+      {required this.id, required this.nome, required this.valor, this.imagem});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['nome'] = Variable<String>(nome);
     map['valor'] = Variable<double>(valor);
-    map['imagem'] = Variable<String>(imagem);
+    if (!nullToAbsent || imagem != null) {
+      map['imagem'] = Variable<String>(imagem);
+    }
     return map;
   }
 
@@ -122,7 +116,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       id: Value(id),
       nome: Value(nome),
       valor: Value(valor),
-      imagem: Value(imagem),
+      imagem:
+          imagem == null && nullToAbsent ? const Value.absent() : Value(imagem),
     );
   }
 
@@ -133,7 +128,7 @@ class Produto extends DataClass implements Insertable<Produto> {
       id: serializer.fromJson<int>(json['id']),
       nome: serializer.fromJson<String>(json['nome']),
       valor: serializer.fromJson<double>(json['valor']),
-      imagem: serializer.fromJson<String>(json['imagem']),
+      imagem: serializer.fromJson<String?>(json['imagem']),
     );
   }
   @override
@@ -143,16 +138,20 @@ class Produto extends DataClass implements Insertable<Produto> {
       'id': serializer.toJson<int>(id),
       'nome': serializer.toJson<String>(nome),
       'valor': serializer.toJson<double>(valor),
-      'imagem': serializer.toJson<String>(imagem),
+      'imagem': serializer.toJson<String?>(imagem),
     };
   }
 
-  Produto copyWith({int? id, String? nome, double? valor, String? imagem}) =>
+  Produto copyWith(
+          {int? id,
+          String? nome,
+          double? valor,
+          Value<String?> imagem = const Value.absent()}) =>
       Produto(
         id: id ?? this.id,
         nome: nome ?? this.nome,
         valor: valor ?? this.valor,
-        imagem: imagem ?? this.imagem,
+        imagem: imagem.present ? imagem.value : this.imagem,
       );
   Produto copyWithCompanion(ProdutosCompanion data) {
     return Produto(
@@ -190,7 +189,7 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
   final Value<int> id;
   final Value<String> nome;
   final Value<double> valor;
-  final Value<String> imagem;
+  final Value<String?> imagem;
   const ProdutosCompanion({
     this.id = const Value.absent(),
     this.nome = const Value.absent(),
@@ -201,10 +200,9 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     this.id = const Value.absent(),
     required String nome,
     required double valor,
-    required String imagem,
+    this.imagem = const Value.absent(),
   })  : nome = Value(nome),
-        valor = Value(valor),
-        imagem = Value(imagem);
+        valor = Value(valor);
   static Insertable<Produto> custom({
     Expression<int>? id,
     Expression<String>? nome,
@@ -223,7 +221,7 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
       {Value<int>? id,
       Value<String>? nome,
       Value<double>? valor,
-      Value<String>? imagem}) {
+      Value<String?>? imagem}) {
     return ProdutosCompanion(
       id: id ?? this.id,
       nome: nome ?? this.nome,
@@ -1027,13 +1025,13 @@ typedef $$ProdutosTableCreateCompanionBuilder = ProdutosCompanion Function({
   Value<int> id,
   required String nome,
   required double valor,
-  required String imagem,
+  Value<String?> imagem,
 });
 typedef $$ProdutosTableUpdateCompanionBuilder = ProdutosCompanion Function({
   Value<int> id,
   Value<String> nome,
   Value<double> valor,
-  Value<String> imagem,
+  Value<String?> imagem,
 });
 
 final class $$ProdutosTableReferences
@@ -1189,7 +1187,7 @@ class $$ProdutosTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> nome = const Value.absent(),
             Value<double> valor = const Value.absent(),
-            Value<String> imagem = const Value.absent(),
+            Value<String?> imagem = const Value.absent(),
           }) =>
               ProdutosCompanion(
             id: id,
@@ -1201,7 +1199,7 @@ class $$ProdutosTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             required String nome,
             required double valor,
-            required String imagem,
+            Value<String?> imagem = const Value.absent(),
           }) =>
               ProdutosCompanion.insert(
             id: id,
