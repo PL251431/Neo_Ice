@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:neo_ice/database/app_database.dart';
-import 'package:neo_ice/screens/add_products.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:neo_ice/database/app_database.dart';
 import 'package:neo_ice/providers/produto_provider.dart';
+import 'package:neo_ice/screens/add_products.dart';
 import 'dart:io';
+import 'package:neo_ice/widgets/product_card.dart';
 
 class ListarProdutosPage extends ConsumerWidget {
   const ListarProdutosPage({super.key});
