@@ -33,22 +33,16 @@ class _AdicionarProdutoPageState extends State<AdicionarProdutoPage> {
     }
   }
 
-  Future<void> _salvarProduto(WidgetRef ref) async {
+Future<void> _salvarProduto(WidgetRef ref) async {
   if (_formKey.currentState!.validate()) {
     final nome = _nomeController.text;
     final preco = double.tryParse(_precoController.text) ?? 0.0;
-
-    if (_imagemPath == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, selecione uma imagem.')),
-      );
-      return;
-    }
+    final imagem = _imagemPath ?? 'assets/images/default.png';
 
     final produto = ProdutosCompanion(
       nome: drift.Value(nome),
       valor: drift.Value(preco),
-      imagem: drift.Value(_imagemPath!),
+      imagem: drift.Value(imagem),
     );
 
     await widget.db.inserirProduto(produto); // Salvar no banco
@@ -57,7 +51,6 @@ class _AdicionarProdutoPageState extends State<AdicionarProdutoPage> {
     Navigator.pop(context);
   }
 }
-
 
   @override
   Widget build(BuildContext context) {
