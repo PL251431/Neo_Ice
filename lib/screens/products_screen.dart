@@ -13,11 +13,8 @@ class ListarProdutosPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final produtos = ref.watch(produtoProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Lista de Produtos'),
-      ),
-      body: produtos.isEmpty
+    return Stack(children: [
+      produtos.isEmpty
           ? const Center(child: Text('Nenhum produto encontrado.'))
           : ListView.builder(
               itemCount: produtos.length,
