@@ -35,21 +35,25 @@ class ListarProdutosPage extends ConsumerWidget {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  AdicionarProdutoPage(db: AppDatabase()), // Ajustar aqui
-            ),
-          ).then((_) {
-            // Recarrega os produtos ao voltar do formulário
-            ref.read(produtoProvider.notifier).carregarProdutos();
-          });
-        },
-        child: const Icon(Icons.add),
+      Positioned(
+        bottom: 20,
+        right: 20,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    AdicionarProdutoPage(db: AppDatabase()), // Ajustar aqui
+              ),
+            ).then((_) {
+              // Recarrega os produtos ao voltar do formulário
+              ref.read(produtoProvider.notifier).carregarProdutos();
+            });
+          },
+          child: const Icon(Icons.add),
+        ),
       ),
-    );
+    ]);
   }
 }
