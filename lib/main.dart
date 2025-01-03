@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:neo_ice/riverpod.dart';
+import 'package:neo_ice/providers/riverpod.dart';
 import 'package:neo_ice/screens/initial_screen.dart';
 
 void main() {
