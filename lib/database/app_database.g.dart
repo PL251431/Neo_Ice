@@ -299,271 +299,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
   }
 }
 
-class $UsuariosTable extends Usuarios with TableInfo<$UsuariosTable, Usuario> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $UsuariosTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _nomeMeta = const VerificationMeta('nome');
-  @override
-  late final GeneratedColumn<String> nome = GeneratedColumn<String>(
-      'nome', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _emailMeta = const VerificationMeta('email');
-  @override
-  late final GeneratedColumn<String> email = GeneratedColumn<String>(
-      'email', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
-  static const VerificationMeta _senhaMeta = const VerificationMeta('senha');
-  @override
-  late final GeneratedColumn<String> senha = GeneratedColumn<String>(
-      'senha', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 6, maxTextLength: 50),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, nome, email, senha];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'usuarios';
-  @override
-  VerificationContext validateIntegrity(Insertable<Usuario> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('nome')) {
-      context.handle(
-          _nomeMeta, nome.isAcceptableOrUnknown(data['nome']!, _nomeMeta));
-    } else if (isInserting) {
-      context.missing(_nomeMeta);
-    }
-    if (data.containsKey('email')) {
-      context.handle(
-          _emailMeta, email.isAcceptableOrUnknown(data['email']!, _emailMeta));
-    } else if (isInserting) {
-      context.missing(_emailMeta);
-    }
-    if (data.containsKey('senha')) {
-      context.handle(
-          _senhaMeta, senha.isAcceptableOrUnknown(data['senha']!, _senhaMeta));
-    } else if (isInserting) {
-      context.missing(_senhaMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Usuario map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Usuario(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      nome: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}nome'])!,
-      email: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}email'])!,
-      senha: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}senha'])!,
-    );
-  }
-
-  @override
-  $UsuariosTable createAlias(String alias) {
-    return $UsuariosTable(attachedDatabase, alias);
-  }
-}
-
-class Usuario extends DataClass implements Insertable<Usuario> {
-  final int id;
-  final String nome;
-  final String email;
-  final String senha;
-  const Usuario(
-      {required this.id,
-      required this.nome,
-      required this.email,
-      required this.senha});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['nome'] = Variable<String>(nome);
-    map['email'] = Variable<String>(email);
-    map['senha'] = Variable<String>(senha);
-    return map;
-  }
-
-  UsuariosCompanion toCompanion(bool nullToAbsent) {
-    return UsuariosCompanion(
-      id: Value(id),
-      nome: Value(nome),
-      email: Value(email),
-      senha: Value(senha),
-    );
-  }
-
-  factory Usuario.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Usuario(
-      id: serializer.fromJson<int>(json['id']),
-      nome: serializer.fromJson<String>(json['nome']),
-      email: serializer.fromJson<String>(json['email']),
-      senha: serializer.fromJson<String>(json['senha']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'nome': serializer.toJson<String>(nome),
-      'email': serializer.toJson<String>(email),
-      'senha': serializer.toJson<String>(senha),
-    };
-  }
-
-  Usuario copyWith({int? id, String? nome, String? email, String? senha}) =>
-      Usuario(
-        id: id ?? this.id,
-        nome: nome ?? this.nome,
-        email: email ?? this.email,
-        senha: senha ?? this.senha,
-      );
-  Usuario copyWithCompanion(UsuariosCompanion data) {
-    return Usuario(
-      id: data.id.present ? data.id.value : this.id,
-      nome: data.nome.present ? data.nome.value : this.nome,
-      email: data.email.present ? data.email.value : this.email,
-      senha: data.senha.present ? data.senha.value : this.senha,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('Usuario(')
-          ..write('id: $id, ')
-          ..write('nome: $nome, ')
-          ..write('email: $email, ')
-          ..write('senha: $senha')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, nome, email, senha);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Usuario &&
-          other.id == this.id &&
-          other.nome == this.nome &&
-          other.email == this.email &&
-          other.senha == this.senha);
-}
-
-class UsuariosCompanion extends UpdateCompanion<Usuario> {
-  final Value<int> id;
-  final Value<String> nome;
-  final Value<String> email;
-  final Value<String> senha;
-  const UsuariosCompanion({
-    this.id = const Value.absent(),
-    this.nome = const Value.absent(),
-    this.email = const Value.absent(),
-    this.senha = const Value.absent(),
-  });
-  UsuariosCompanion.insert({
-    this.id = const Value.absent(),
-    required String nome,
-    required String email,
-    required String senha,
-  })  : nome = Value(nome),
-        email = Value(email),
-        senha = Value(senha);
-  static Insertable<Usuario> custom({
-    Expression<int>? id,
-    Expression<String>? nome,
-    Expression<String>? email,
-    Expression<String>? senha,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (nome != null) 'nome': nome,
-      if (email != null) 'email': email,
-      if (senha != null) 'senha': senha,
-    });
-  }
-
-  UsuariosCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? nome,
-      Value<String>? email,
-      Value<String>? senha}) {
-    return UsuariosCompanion(
-      id: id ?? this.id,
-      nome: nome ?? this.nome,
-      email: email ?? this.email,
-      senha: senha ?? this.senha,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (nome.present) {
-      map['nome'] = Variable<String>(nome.value);
-    }
-    if (email.present) {
-      map['email'] = Variable<String>(email.value);
-    }
-    if (senha.present) {
-      map['senha'] = Variable<String>(senha.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('UsuariosCompanion(')
-          ..write('id: $id, ')
-          ..write('nome: $nome, ')
-          ..write('email: $email, ')
-          ..write('senha: $senha')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $VendedoresTable extends Vendedores
-    with TableInfo<$VendedoresTable, Vendedore> {
+    with TableInfo<$VendedoresTable, Vendedor> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -582,7 +319,7 @@ class $VendedoresTable extends Vendedores
   late final GeneratedColumn<String> nome = GeneratedColumn<String>(
       'nome', aliasedName, false,
       additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
   @override
@@ -593,7 +330,7 @@ class $VendedoresTable extends Vendedores
   String get actualTableName => $name;
   static const String $name = 'vendedores';
   @override
-  VerificationContext validateIntegrity(Insertable<Vendedore> instance,
+  VerificationContext validateIntegrity(Insertable<Vendedor> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -612,9 +349,9 @@ class $VendedoresTable extends Vendedores
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Vendedore map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Vendedor map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Vendedore(
+    return Vendedor(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       nome: attachedDatabase.typeMapping
@@ -628,10 +365,10 @@ class $VendedoresTable extends Vendedores
   }
 }
 
-class Vendedore extends DataClass implements Insertable<Vendedore> {
+class Vendedor extends DataClass implements Insertable<Vendedor> {
   final int id;
   final String nome;
-  const Vendedore({required this.id, required this.nome});
+  const Vendedor({required this.id, required this.nome});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -647,10 +384,10 @@ class Vendedore extends DataClass implements Insertable<Vendedore> {
     );
   }
 
-  factory Vendedore.fromJson(Map<String, dynamic> json,
+  factory Vendedor.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Vendedore(
+    return Vendedor(
       id: serializer.fromJson<int>(json['id']),
       nome: serializer.fromJson<String>(json['nome']),
     );
@@ -664,12 +401,12 @@ class Vendedore extends DataClass implements Insertable<Vendedore> {
     };
   }
 
-  Vendedore copyWith({int? id, String? nome}) => Vendedore(
+  Vendedor copyWith({int? id, String? nome}) => Vendedor(
         id: id ?? this.id,
         nome: nome ?? this.nome,
       );
-  Vendedore copyWithCompanion(VendedoresCompanion data) {
-    return Vendedore(
+  Vendedor copyWithCompanion(VendedoresCompanion data) {
+    return Vendedor(
       id: data.id.present ? data.id.value : this.id,
       nome: data.nome.present ? data.nome.value : this.nome,
     );
@@ -677,7 +414,7 @@ class Vendedore extends DataClass implements Insertable<Vendedore> {
 
   @override
   String toString() {
-    return (StringBuffer('Vendedore(')
+    return (StringBuffer('Vendedor(')
           ..write('id: $id, ')
           ..write('nome: $nome')
           ..write(')'))
@@ -689,10 +426,10 @@ class Vendedore extends DataClass implements Insertable<Vendedore> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Vendedore && other.id == this.id && other.nome == this.nome);
+      (other is Vendedor && other.id == this.id && other.nome == this.nome);
 }
 
-class VendedoresCompanion extends UpdateCompanion<Vendedore> {
+class VendedoresCompanion extends UpdateCompanion<Vendedor> {
   final Value<int> id;
   final Value<String> nome;
   const VendedoresCompanion({
@@ -703,7 +440,7 @@ class VendedoresCompanion extends UpdateCompanion<Vendedore> {
     this.id = const Value.absent(),
     required String nome,
   }) : nome = Value(nome);
-  static Insertable<Vendedore> custom({
+  static Insertable<Vendedor> custom({
     Expression<int>? id,
     Expression<String>? nome,
   }) {
@@ -1049,7 +786,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ProdutosTable produtos = $ProdutosTable(this);
-  late final $UsuariosTable usuarios = $UsuariosTable(this);
   late final $VendedoresTable vendedores = $VendedoresTable(this);
   late final $VendasTable vendas = $VendasTable(this);
   @override
@@ -1057,7 +793,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [produtos, usuarios, vendedores, vendas];
+      [produtos, vendedores, vendas];
 }
 
 typedef $$ProdutosTableCreateCompanionBuilder = ProdutosCompanion Function({
@@ -1302,150 +1038,6 @@ typedef $$ProdutosTableProcessedTableManager = ProcessedTableManager<
     (Produto, $$ProdutosTableReferences),
     Produto,
     PrefetchHooks Function({bool vendasRefs})>;
-typedef $$UsuariosTableCreateCompanionBuilder = UsuariosCompanion Function({
-  Value<int> id,
-  required String nome,
-  required String email,
-  required String senha,
-});
-typedef $$UsuariosTableUpdateCompanionBuilder = UsuariosCompanion Function({
-  Value<int> id,
-  Value<String> nome,
-  Value<String> email,
-  Value<String> senha,
-});
-
-class $$UsuariosTableFilterComposer
-    extends Composer<_$AppDatabase, $UsuariosTable> {
-  $$UsuariosTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get nome => $composableBuilder(
-      column: $table.nome, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get email => $composableBuilder(
-      column: $table.email, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get senha => $composableBuilder(
-      column: $table.senha, builder: (column) => ColumnFilters(column));
-}
-
-class $$UsuariosTableOrderingComposer
-    extends Composer<_$AppDatabase, $UsuariosTable> {
-  $$UsuariosTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get nome => $composableBuilder(
-      column: $table.nome, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get email => $composableBuilder(
-      column: $table.email, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get senha => $composableBuilder(
-      column: $table.senha, builder: (column) => ColumnOrderings(column));
-}
-
-class $$UsuariosTableAnnotationComposer
-    extends Composer<_$AppDatabase, $UsuariosTable> {
-  $$UsuariosTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get nome =>
-      $composableBuilder(column: $table.nome, builder: (column) => column);
-
-  GeneratedColumn<String> get email =>
-      $composableBuilder(column: $table.email, builder: (column) => column);
-
-  GeneratedColumn<String> get senha =>
-      $composableBuilder(column: $table.senha, builder: (column) => column);
-}
-
-class $$UsuariosTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $UsuariosTable,
-    Usuario,
-    $$UsuariosTableFilterComposer,
-    $$UsuariosTableOrderingComposer,
-    $$UsuariosTableAnnotationComposer,
-    $$UsuariosTableCreateCompanionBuilder,
-    $$UsuariosTableUpdateCompanionBuilder,
-    (Usuario, BaseReferences<_$AppDatabase, $UsuariosTable, Usuario>),
-    Usuario,
-    PrefetchHooks Function()> {
-  $$UsuariosTableTableManager(_$AppDatabase db, $UsuariosTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$UsuariosTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$UsuariosTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$UsuariosTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> nome = const Value.absent(),
-            Value<String> email = const Value.absent(),
-            Value<String> senha = const Value.absent(),
-          }) =>
-              UsuariosCompanion(
-            id: id,
-            nome: nome,
-            email: email,
-            senha: senha,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String nome,
-            required String email,
-            required String senha,
-          }) =>
-              UsuariosCompanion.insert(
-            id: id,
-            nome: nome,
-            email: email,
-            senha: senha,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$UsuariosTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $UsuariosTable,
-    Usuario,
-    $$UsuariosTableFilterComposer,
-    $$UsuariosTableOrderingComposer,
-    $$UsuariosTableAnnotationComposer,
-    $$UsuariosTableCreateCompanionBuilder,
-    $$UsuariosTableUpdateCompanionBuilder,
-    (Usuario, BaseReferences<_$AppDatabase, $UsuariosTable, Usuario>),
-    Usuario,
-    PrefetchHooks Function()>;
 typedef $$VendedoresTableCreateCompanionBuilder = VendedoresCompanion Function({
   Value<int> id,
   required String nome,
@@ -1456,7 +1048,7 @@ typedef $$VendedoresTableUpdateCompanionBuilder = VendedoresCompanion Function({
 });
 
 final class $$VendedoresTableReferences
-    extends BaseReferences<_$AppDatabase, $VendedoresTable, Vendedore> {
+    extends BaseReferences<_$AppDatabase, $VendedoresTable, Vendedor> {
   $$VendedoresTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$VendasTable, List<Venda>> _vendasRefsTable(
@@ -1568,14 +1160,14 @@ class $$VendedoresTableAnnotationComposer
 class $$VendedoresTableTableManager extends RootTableManager<
     _$AppDatabase,
     $VendedoresTable,
-    Vendedore,
+    Vendedor,
     $$VendedoresTableFilterComposer,
     $$VendedoresTableOrderingComposer,
     $$VendedoresTableAnnotationComposer,
     $$VendedoresTableCreateCompanionBuilder,
     $$VendedoresTableUpdateCompanionBuilder,
-    (Vendedore, $$VendedoresTableReferences),
-    Vendedore,
+    (Vendedor, $$VendedoresTableReferences),
+    Vendedor,
     PrefetchHooks Function({bool vendasRefs})> {
   $$VendedoresTableTableManager(_$AppDatabase db, $VendedoresTable table)
       : super(TableManagerState(
@@ -1638,14 +1230,14 @@ class $$VendedoresTableTableManager extends RootTableManager<
 typedef $$VendedoresTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
     $VendedoresTable,
-    Vendedore,
+    Vendedor,
     $$VendedoresTableFilterComposer,
     $$VendedoresTableOrderingComposer,
     $$VendedoresTableAnnotationComposer,
     $$VendedoresTableCreateCompanionBuilder,
     $$VendedoresTableUpdateCompanionBuilder,
-    (Vendedore, $$VendedoresTableReferences),
-    Vendedore,
+    (Vendedor, $$VendedoresTableReferences),
+    Vendedor,
     PrefetchHooks Function({bool vendasRefs})>;
 typedef $$VendasTableCreateCompanionBuilder = VendasCompanion Function({
   Value<int> id,
@@ -1989,8 +1581,6 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$ProdutosTableTableManager get produtos =>
       $$ProdutosTableTableManager(_db, _db.produtos);
-  $$UsuariosTableTableManager get usuarios =>
-      $$UsuariosTableTableManager(_db, _db.usuarios);
   $$VendedoresTableTableManager get vendedores =>
       $$VendedoresTableTableManager(_db, _db.vendedores);
   $$VendasTableTableManager get vendas =>
