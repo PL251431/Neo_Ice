@@ -20,6 +20,8 @@ class _AdicionarProdutoPageState extends State<AdicionarProdutoPage> {
   final _formKey = GlobalKey<FormState>();
   final _nomeController = TextEditingController();
   final _precoController = TextEditingController();
+  final _quantidadeController = TextEditingController();
+
   String? _imagemPath;
 
   Future<void> _selecionarImagem() async {
@@ -33,24 +35,28 @@ class _AdicionarProdutoPageState extends State<AdicionarProdutoPage> {
     }
   }
 
-Future<void> _salvarProduto(WidgetRef ref) async {
-  if (_formKey.currentState!.validate()) {
-    final nome = _nomeController.text;
-    final preco = double.tryParse(_precoController.text) ?? 0.0;
-    final imagem = _imagemPath ?? 'assets/images/default.png';
+  Future<void> _salvarProduto(WidgetRef ref) async {
+    if (_formKey.currentState!.validate()) {
+      final nome = _nomeController.text;
+      final preco = double.tryParse(_precoController.text) ?? 0.0;
+      final imagem = _imagemPath ?? 'assets/images/default.png';
+      final quantidade = int.tryParse(_quantidadeController.text) ?? 0;
 
-    final produto = ProdutosCompanion(
-      nome: drift.Value(nome),
-      valor: drift.Value(preco),
-      imagem: drift.Value(imagem),
-    );
+      final produto = ProdutosCompanion(
+        nome: drift.Value(nome),
+        valor: drift.Value(preco),
+        imagem: drift.Value(imagem),
+        quantidade: drift.Value(quantidade), 
+      );
 
-    await widget.db.inserirProduto(produto); // Salvar no banco
-    await ref.read(produtoProvider.notifier).carregarProdutos(); // Atualizar lista
-    // ignore: use_build_context_synchronously
-    Navigator.pop(context);
+      await widget.db.inserirProduto(produto); // Salvar no banco
+      await ref
+          .read(produtoProvider.notifier)
+          .carregarProdutos(); // Atualizar lista
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +86,21 @@ Future<void> _salvarProduto(WidgetRef ref) async {
                         : double.tryParse(value) == null
                             ? 'Por favor, insira um número válido.'
                             : null,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _quantidadeController,
+                    decoration: const InputDecoration(labelText: 'Quantidade'),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, insira a quantidade.';
+                      }
+                      if (int.tryParse(value) == null) {
+                        return 'Insira um número inteiro válido.';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   _imagemPath == null

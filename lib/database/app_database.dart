@@ -17,10 +17,12 @@ class Usuarios extends Table {
 // Tabela de Produtos
 class Produtos extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get nome => text().withLength(min: 1, max: 100)();
+  TextColumn get nome => text()();
   RealColumn get valor => real()();
-  TextColumn get imagem => text().nullable().withLength(min: 1, max: 255)();
+  TextColumn get imagem => text()();
+  IntColumn get quantidade => integer().withDefault(const Constant(0))(); // Novo campo
 }
+
 
 
 // Tabela de Vendedores
@@ -65,13 +67,24 @@ class AppDatabase extends _$AppDatabase {
 
   // Método para inserir uma venda
   Future<int> inserirVenda(VendasCompanion venda) => into(vendas).insert(venda);
-
+  
   // Método para excluir uma venda
   Future<int> excluirVenda(int id) =>
       (delete(vendas)..where((tbl) => tbl.id.equals(id))).go();
 
+  // Estratégia de Migração
   @override
-  int get schemaVersion => 1; // Atualize conforme necessário
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (migrator, from, to) async {
+          if (from == 1) {
+            // Adiciona o campo `quantidade` à tabela Produtos
+            await migrator.addColumn(produtos, produtos.quantidade);
+          }
+        },
+      );
+
+  @override
+  int get schemaVersion => 2; // Atualize conforme necessário
 }
 
 // Função para abrir a conexão com o banco de dados
