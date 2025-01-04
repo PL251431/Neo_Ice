@@ -20,15 +20,15 @@ class Produtos extends Table {
   TextColumn get nome => text()();
   RealColumn get valor => real()();
   TextColumn get imagem => text()();
-  IntColumn get quantidade => integer().withDefault(const Constant(0))(); // Novo campo
+  IntColumn get quantidade =>
+      integer().withDefault(const Constant(0))(); // Novo campo
 }
 
-
-
 // Tabela de Vendedores
+@DataClassName('Vendedor')
 class Vendedores extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get nome => text().withLength(min: 1, max: 100)();
+  TextColumn get nome => text().withLength(min: 1, max: 50)();
 }
 
 // Tabela de Vendas
@@ -43,7 +43,7 @@ class Vendas extends Table {
 }
 
 // Banco de dados principal
-@DriftDatabase(tables: [Produtos, Usuarios, Vendedores, Vendas])
+@DriftDatabase(tables: [Produtos, Vendedores, Vendas])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -67,10 +67,14 @@ class AppDatabase extends _$AppDatabase {
 
   // Método para inserir uma venda
   Future<int> inserirVenda(VendasCompanion venda) => into(vendas).insert(venda);
-  
+
   // Método para excluir uma venda
   Future<int> excluirVenda(int id) =>
       (delete(vendas)..where((tbl) => tbl.id.equals(id))).go();
+
+
+Future<List<Vendedor>> listarVendedores() => select(vendedores).get();
+
 
   // Estratégia de Migração
   @override
