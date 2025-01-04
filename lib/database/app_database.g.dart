@@ -21,10 +21,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   @override
   late final GeneratedColumn<String> nome = GeneratedColumn<String>(
       'nome', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _valorMeta = const VerificationMeta('valor');
   @override
   late final GeneratedColumn<double> valor = GeneratedColumn<double>(
@@ -33,10 +30,18 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   static const VerificationMeta _imagemMeta = const VerificationMeta('imagem');
   @override
   late final GeneratedColumn<String> imagem = GeneratedColumn<String>(
-      'imagem', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'imagem', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _quantidadeMeta =
+      const VerificationMeta('quantidade');
   @override
-  List<GeneratedColumn> get $columns => [id, nome, valor, imagem];
+  late final GeneratedColumn<int> quantidade = GeneratedColumn<int>(
+      'quantidade', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns => [id, nome, valor, imagem, quantidade];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -65,6 +70,14 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
     if (data.containsKey('imagem')) {
       context.handle(_imagemMeta,
           imagem.isAcceptableOrUnknown(data['imagem']!, _imagemMeta));
+    } else if (isInserting) {
+      context.missing(_imagemMeta);
+    }
+    if (data.containsKey('quantidade')) {
+      context.handle(
+          _quantidadeMeta,
+          quantidade.isAcceptableOrUnknown(
+              data['quantidade']!, _quantidadeMeta));
     }
     return context;
   }
@@ -82,7 +95,9 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
       valor: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}valor'])!,
       imagem: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}imagem']),
+          .read(DriftSqlType.string, data['${effectivePrefix}imagem'])!,
+      quantidade: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}quantidade'])!,
     );
   }
 
@@ -96,18 +111,22 @@ class Produto extends DataClass implements Insertable<Produto> {
   final int id;
   final String nome;
   final double valor;
-  final String? imagem;
+  final String imagem;
+  final int quantidade;
   const Produto(
-      {required this.id, required this.nome, required this.valor, this.imagem});
+      {required this.id,
+      required this.nome,
+      required this.valor,
+      required this.imagem,
+      required this.quantidade});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['nome'] = Variable<String>(nome);
     map['valor'] = Variable<double>(valor);
-    if (!nullToAbsent || imagem != null) {
-      map['imagem'] = Variable<String>(imagem);
-    }
+    map['imagem'] = Variable<String>(imagem);
+    map['quantidade'] = Variable<int>(quantidade);
     return map;
   }
 
@@ -116,8 +135,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       id: Value(id),
       nome: Value(nome),
       valor: Value(valor),
-      imagem:
-          imagem == null && nullToAbsent ? const Value.absent() : Value(imagem),
+      imagem: Value(imagem),
+      quantidade: Value(quantidade),
     );
   }
 
@@ -128,7 +147,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       id: serializer.fromJson<int>(json['id']),
       nome: serializer.fromJson<String>(json['nome']),
       valor: serializer.fromJson<double>(json['valor']),
-      imagem: serializer.fromJson<String?>(json['imagem']),
+      imagem: serializer.fromJson<String>(json['imagem']),
+      quantidade: serializer.fromJson<int>(json['quantidade']),
     );
   }
   @override
@@ -138,7 +158,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       'id': serializer.toJson<int>(id),
       'nome': serializer.toJson<String>(nome),
       'valor': serializer.toJson<double>(valor),
-      'imagem': serializer.toJson<String?>(imagem),
+      'imagem': serializer.toJson<String>(imagem),
+      'quantidade': serializer.toJson<int>(quantidade),
     };
   }
 
@@ -146,12 +167,14 @@ class Produto extends DataClass implements Insertable<Produto> {
           {int? id,
           String? nome,
           double? valor,
-          Value<String?> imagem = const Value.absent()}) =>
+          String? imagem,
+          int? quantidade}) =>
       Produto(
         id: id ?? this.id,
         nome: nome ?? this.nome,
         valor: valor ?? this.valor,
-        imagem: imagem.present ? imagem.value : this.imagem,
+        imagem: imagem ?? this.imagem,
+        quantidade: quantidade ?? this.quantidade,
       );
   Produto copyWithCompanion(ProdutosCompanion data) {
     return Produto(
@@ -159,6 +182,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       nome: data.nome.present ? data.nome.value : this.nome,
       valor: data.valor.present ? data.valor.value : this.valor,
       imagem: data.imagem.present ? data.imagem.value : this.imagem,
+      quantidade:
+          data.quantidade.present ? data.quantidade.value : this.quantidade,
     );
   }
 
@@ -168,13 +193,14 @@ class Produto extends DataClass implements Insertable<Produto> {
           ..write('id: $id, ')
           ..write('nome: $nome, ')
           ..write('valor: $valor, ')
-          ..write('imagem: $imagem')
+          ..write('imagem: $imagem, ')
+          ..write('quantidade: $quantidade')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, nome, valor, imagem);
+  int get hashCode => Object.hash(id, nome, valor, imagem, quantidade);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -182,38 +208,45 @@ class Produto extends DataClass implements Insertable<Produto> {
           other.id == this.id &&
           other.nome == this.nome &&
           other.valor == this.valor &&
-          other.imagem == this.imagem);
+          other.imagem == this.imagem &&
+          other.quantidade == this.quantidade);
 }
 
 class ProdutosCompanion extends UpdateCompanion<Produto> {
   final Value<int> id;
   final Value<String> nome;
   final Value<double> valor;
-  final Value<String?> imagem;
+  final Value<String> imagem;
+  final Value<int> quantidade;
   const ProdutosCompanion({
     this.id = const Value.absent(),
     this.nome = const Value.absent(),
     this.valor = const Value.absent(),
     this.imagem = const Value.absent(),
+    this.quantidade = const Value.absent(),
   });
   ProdutosCompanion.insert({
     this.id = const Value.absent(),
     required String nome,
     required double valor,
-    this.imagem = const Value.absent(),
+    required String imagem,
+    this.quantidade = const Value.absent(),
   })  : nome = Value(nome),
-        valor = Value(valor);
+        valor = Value(valor),
+        imagem = Value(imagem);
   static Insertable<Produto> custom({
     Expression<int>? id,
     Expression<String>? nome,
     Expression<double>? valor,
     Expression<String>? imagem,
+    Expression<int>? quantidade,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (nome != null) 'nome': nome,
       if (valor != null) 'valor': valor,
       if (imagem != null) 'imagem': imagem,
+      if (quantidade != null) 'quantidade': quantidade,
     });
   }
 
@@ -221,12 +254,14 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
       {Value<int>? id,
       Value<String>? nome,
       Value<double>? valor,
-      Value<String?>? imagem}) {
+      Value<String>? imagem,
+      Value<int>? quantidade}) {
     return ProdutosCompanion(
       id: id ?? this.id,
       nome: nome ?? this.nome,
       valor: valor ?? this.valor,
       imagem: imagem ?? this.imagem,
+      quantidade: quantidade ?? this.quantidade,
     );
   }
 
@@ -245,6 +280,9 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     if (imagem.present) {
       map['imagem'] = Variable<String>(imagem.value);
     }
+    if (quantidade.present) {
+      map['quantidade'] = Variable<int>(quantidade.value);
+    }
     return map;
   }
 
@@ -254,7 +292,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
           ..write('id: $id, ')
           ..write('nome: $nome, ')
           ..write('valor: $valor, ')
-          ..write('imagem: $imagem')
+          ..write('imagem: $imagem, ')
+          ..write('quantidade: $quantidade')
           ..write(')'))
         .toString();
   }
@@ -1025,13 +1064,15 @@ typedef $$ProdutosTableCreateCompanionBuilder = ProdutosCompanion Function({
   Value<int> id,
   required String nome,
   required double valor,
-  Value<String?> imagem,
+  required String imagem,
+  Value<int> quantidade,
 });
 typedef $$ProdutosTableUpdateCompanionBuilder = ProdutosCompanion Function({
   Value<int> id,
   Value<String> nome,
   Value<double> valor,
-  Value<String?> imagem,
+  Value<String> imagem,
+  Value<int> quantidade,
 });
 
 final class $$ProdutosTableReferences
@@ -1073,6 +1114,9 @@ class $$ProdutosTableFilterComposer
 
   ColumnFilters<String> get imagem => $composableBuilder(
       column: $table.imagem, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get quantidade => $composableBuilder(
+      column: $table.quantidade, builder: (column) => ColumnFilters(column));
 
   Expression<bool> vendasRefs(
       Expression<bool> Function($$VendasTableFilterComposer f) f) {
@@ -1116,6 +1160,9 @@ class $$ProdutosTableOrderingComposer
 
   ColumnOrderings<String> get imagem => $composableBuilder(
       column: $table.imagem, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get quantidade => $composableBuilder(
+      column: $table.quantidade, builder: (column) => ColumnOrderings(column));
 }
 
 class $$ProdutosTableAnnotationComposer
@@ -1138,6 +1185,9 @@ class $$ProdutosTableAnnotationComposer
 
   GeneratedColumn<String> get imagem =>
       $composableBuilder(column: $table.imagem, builder: (column) => column);
+
+  GeneratedColumn<int> get quantidade => $composableBuilder(
+      column: $table.quantidade, builder: (column) => column);
 
   Expression<T> vendasRefs<T extends Object>(
       Expression<T> Function($$VendasTableAnnotationComposer a) f) {
@@ -1187,25 +1237,29 @@ class $$ProdutosTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> nome = const Value.absent(),
             Value<double> valor = const Value.absent(),
-            Value<String?> imagem = const Value.absent(),
+            Value<String> imagem = const Value.absent(),
+            Value<int> quantidade = const Value.absent(),
           }) =>
               ProdutosCompanion(
             id: id,
             nome: nome,
             valor: valor,
             imagem: imagem,
+            quantidade: quantidade,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String nome,
             required double valor,
-            Value<String?> imagem = const Value.absent(),
+            required String imagem,
+            Value<int> quantidade = const Value.absent(),
           }) =>
               ProdutosCompanion.insert(
             id: id,
             nome: nome,
             valor: valor,
             imagem: imagem,
+            quantidade: quantidade,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) =>

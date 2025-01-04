@@ -21,8 +21,8 @@ class ListarProdutosPage extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final produto = produtos[index];
                 final imageProvider =
-                    produto.imagem != null && File(produto.imagem!).existsSync()
-                        ? FileImage(File(produto.imagem!))
+                    produto.imagem != null && File(produto.imagem).existsSync()
+                        ? FileImage(File(produto.imagem))
                         : const AssetImage('assets/images/default.png')
                             as ImageProvider<Object>;
 

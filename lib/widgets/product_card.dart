@@ -44,6 +44,11 @@ class ProductCard extends StatelessWidget {
                     'Preço: R\$ ${valor.toStringAsFixed(2)}',
                     style: const TextStyle(fontSize: 16, color: Colors.grey),
                   ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Quantidade disponível: $qtd',
+                    style: const TextStyle(fontSize: 16, color: Colors.blue),
+                  ),
                 ],
               ),
             ),
