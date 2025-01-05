@@ -6,13 +6,8 @@ import 'dart:io';
 // Importação para gerar o código automaticamente
 part 'app_database.g.dart';
 
-// Tabela de Usuários (Gerente)
-class Usuarios extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get nome => text().withLength(min: 1, max: 50)();
-  TextColumn get email => text().unique().withLength(min: 1, max: 100)();
-  TextColumn get senha => text().withLength(min: 6, max: 50)();
-}
+
+
 
 // Tabela de Produtos
 class Produtos extends Table {
@@ -72,9 +67,17 @@ class AppDatabase extends _$AppDatabase {
   Future<int> excluirVenda(int id) =>
       (delete(vendas)..where((tbl) => tbl.id.equals(id))).go();
 
+  Future<void> inserirVendedor(VendedoresCompanion vendedor) async {
+    await into(vendedores).insert(vendedor);
+  }
 
-Future<List<Vendedor>> listarVendedores() => select(vendedores).get();
+  Future<List<Vendedor>> listarVendedores() async {
+    return await select(vendedores).get();
+  }
 
+  Future<void> excluirVendedor(int id) async {
+    await (delete(vendedores)..where((tbl) => tbl.id.equals(id))).go();
+  }
 
   // Estratégia de Migração
   @override
