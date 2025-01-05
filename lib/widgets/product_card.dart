@@ -4,7 +4,6 @@ class ProductCard extends StatelessWidget {
   final ImageProvider<Object> image;
   final String name;
   final double valor;
-  final int qtd;
   final BuildContext context;
 
   const ProductCard(
@@ -12,7 +11,6 @@ class ProductCard extends StatelessWidget {
       required this.image,
       required this.name,
       required this.valor,
-      required this.qtd,
       required this.context});
 
   @override
@@ -37,17 +35,11 @@ class ProductCard extends StatelessWidget {
                   Text(
                     name,
                     style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                        fontSize: 28, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 8),
                   Text(
                     'Preço: R\$ ${valor.toStringAsFixed(2)}',
                     style: const TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Quantidade disponível: $qtd',
-                    style: const TextStyle(fontSize: 16, color: Colors.blue),
                   ),
                 ],
               ),
