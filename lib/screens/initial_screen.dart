@@ -29,7 +29,7 @@ class InitialScreen extends ConsumerWidget {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('Nenhum produto disponível.'));
           }
-          return ChartsScreen(produtos: snapshot.data!);
+          return MonitoringPage(produtos: snapshot.data!);
         },
       ),
     ];
