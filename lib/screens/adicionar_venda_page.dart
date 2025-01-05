@@ -56,11 +56,10 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
               const SizedBox(height: 16),
 
               // Dropdown de Vendedores
-              vendedoresAsync.when(
-                data: (vendedores) {
-                  return DropdownButtonFormField<int>(
-                    value: _vendedorId,
-                    items: vendedores
+    
+                    DropdownButtonFormField<int>(
+               value: _vendedorId,
+                    items: vendedoresAsync
                         .map((vendedor) => DropdownMenuItem(
                               value: vendedor.id,
                               child: Text(vendedor.nome),
@@ -75,12 +74,7 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
                     validator: (value) => value == null
                         ? 'Por favor, selecione um vendedor'
                         : null,
-                  );
-                },
-                loading: () => const CircularProgressIndicator(),
-                error: (err, stack) =>
-                    Text('Erro ao carregar vendedores: $err'),
-              ),
+                  ),
 
               const SizedBox(height: 16),
 
