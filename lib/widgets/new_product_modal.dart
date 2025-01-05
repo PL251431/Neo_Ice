@@ -6,17 +6,16 @@ import 'package:neo_ice/providers/produto_provider.dart';
 import 'package:drift/drift.dart' as drift;
 import 'dart:io';
 
-class AdicionarProdutoPage extends StatefulWidget {
-  final AppDatabase db; // Banco de dados
+class AdicionarProdutoModal extends StatefulWidget {
+  final AppDatabase db; 
 
-  const AdicionarProdutoPage({super.key, required this.db});
+  const AdicionarProdutoModal({super.key, required this.db});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _AdicionarProdutoPageState createState() => _AdicionarProdutoPageState();
+  _AdicionarProdutoModalState createState() => _AdicionarProdutoModalState();
 }
 
-class _AdicionarProdutoPageState extends State<AdicionarProdutoPage> {
+class _AdicionarProdutoModalState extends State<AdicionarProdutoModal> {
   final _formKey = GlobalKey<FormState>();
   final _nomeController = TextEditingController();
   final _precoController = TextEditingController();
@@ -46,29 +45,30 @@ class _AdicionarProdutoPageState extends State<AdicionarProdutoPage> {
         nome: drift.Value(nome),
         valor: drift.Value(preco),
         imagem: drift.Value(imagem),
-        quantidade: drift.Value(quantidade), 
+        quantidade: drift.Value(quantidade),
       );
 
       await widget.db.inserirProduto(produto); // Salvar no banco
-      await ref
-          .read(produtoProvider.notifier)
-          .carregarProdutos(); // Atualizar lista
-      // ignore: use_build_context_synchronously
+      await ref.read(produtoProvider.notifier).carregarProdutos();
       Navigator.pop(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Adicionar Produto')),
-      body: Consumer(
-        builder: (context, ref, child) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Consumer(
+          builder: (context, ref, child) {
+            return Form(
               key: _formKey,
               child: ListView(
+                shrinkWrap:
+                    true, // Permite que o conteúdo da lista seja scrollable dentro do modal
                 children: [
                   TextFormField(
                     controller: _nomeController,
@@ -88,21 +88,6 @@ class _AdicionarProdutoPageState extends State<AdicionarProdutoPage> {
                             : null,
                   ),
                   const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _quantidadeController,
-                    decoration: const InputDecoration(labelText: 'Quantidade'),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, insira a quantidade.';
-                      }
-                      if (int.tryParse(value) == null) {
-                        return 'Insira um número inteiro válido.';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
                   _imagemPath == null
                       ? const Text('Nenhuma imagem selecionada.')
                       : Image.file(File(_imagemPath!)),
@@ -118,9 +103,9 @@ class _AdicionarProdutoPageState extends State<AdicionarProdutoPage> {
                   ),
                 ],
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
