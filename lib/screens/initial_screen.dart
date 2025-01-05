@@ -4,6 +4,7 @@ import 'package:neo_ice/providers/riverpod.dart';
 import 'package:neo_ice/screens/charts_screen.dart';
 import 'package:neo_ice/screens/products_screen.dart';
 import 'package:neo_ice/screens/listar_vendas_page.dart';
+import 'package:neo_ice/screens/listar_vendedores_page.dart'; // Importe a tela de vendedores
 import 'package:neo_ice/database/app_database.dart';
 
 class InitialScreen extends ConsumerWidget {
@@ -48,6 +49,18 @@ class InitialScreen extends ConsumerWidget {
               value: mode,
               onChanged: (newMode) {
                 ref.read(lightMode.notifier).state = newMode;
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.people), // Ícone de pessoas
+              onPressed: () {
+                // Navegar para a tela de vendedores
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ListarVendedoresPage(),
+                  ),
+                );
               },
             ),
           ],
