@@ -4,7 +4,7 @@ import 'package:neo_ice/providers/riverpod.dart';
 import 'package:neo_ice/screens/monitoring_page.dart';
 import 'package:neo_ice/screens/products_list_page.dart';
 import 'package:neo_ice/screens/sale_list_page.dart';
-import 'package:neo_ice/screens/collaborator_list_page.dart';
+import 'package:neo_ice/screens/collaborators_list_page.dart';
 import 'package:neo_ice/database/app_database.dart';
 
 class InitialScreen extends ConsumerWidget {
