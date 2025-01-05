@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:neo_ice/database/app_database.dart';
 
-class ChartsScreen extends StatelessWidget {
+class MonitoringPage extends StatelessWidget {
   final List<Produto> produtos;
 
-  const ChartsScreen({super.key, required this.produtos});
+  const MonitoringPage({super.key, required this.produtos});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,8 @@ class ChartsScreen extends StatelessWidget {
       return BarChartGroupData(
         x: index,
         barRods: [
-          BarChartRodData(toY: produto.quantidade.toDouble(), color: Colors.blue),
+          BarChartRodData(
+              toY: produto.quantidade.toDouble(), color: Colors.blue),
         ],
       );
     }).toList();
@@ -83,25 +84,24 @@ class ChartsScreen extends StatelessWidget {
 
   // Configura os rótulos do eixo X
   FlTitlesData _getTitlesData() {
-  return FlTitlesData(
-    leftTitles: AxisTitles(
-      sideTitles: SideTitles(showTitles: true),
-    ),
-    bottomTitles: AxisTitles(
-      sideTitles: SideTitles(
-        showTitles: true,
-        getTitlesWidget: (value, meta) {
-          if (value.toInt() >= 0 && value.toInt() < produtos.length) {
-            return Text(
-              produtos[value.toInt()].nome,
-              style: const TextStyle(fontSize: 12),
-            );
-          }
-          return const Text('');
-        },
+    return FlTitlesData(
+      leftTitles: AxisTitles(
+        sideTitles: SideTitles(showTitles: true),
       ),
-    ),
-  );
-}
-
+      bottomTitles: AxisTitles(
+        sideTitles: SideTitles(
+          showTitles: true,
+          getTitlesWidget: (value, meta) {
+            if (value.toInt() >= 0 && value.toInt() < produtos.length) {
+              return Text(
+                produtos[value.toInt()].nome,
+                style: const TextStyle(fontSize: 12),
+              );
+            }
+            return const Text('');
+          },
+        ),
+      ),
+    );
+  }
 }
