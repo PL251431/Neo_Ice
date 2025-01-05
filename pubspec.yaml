@@ -21,6 +21,7 @@ dependencies:
   fl_chart: 
   flex_color_scheme: ^8.0.2
   path: 
+  intl:
 
 dev_dependencies:
   drift_dev: 
