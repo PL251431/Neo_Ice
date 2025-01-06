@@ -7,8 +7,6 @@ environment:
   sdk: ^3.5.4
 
 dependencies:
-  hive: ^2.2.3
-    hive_flutter: ^1.1.0
   image_picker: 
   sqlite3: 
   ffi: 
@@ -24,6 +22,7 @@ dependencies:
   flex_color_scheme: ^8.0.2
   path: 
   intl:
+  hive: ^2.2.3
 
 dev_dependencies:
   drift_dev: 
