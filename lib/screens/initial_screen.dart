@@ -67,7 +67,7 @@ class InitialScreen extends ConsumerWidget {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.people),
-              label: 'Vendedores',
+              label: 'Colaboradores',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.equalizer),
@@ -77,7 +77,8 @@ class InitialScreen extends ConsumerWidget {
           currentIndex: ref.watch(indexPage),
           selectedItemColor: Colors.lightBlueAccent,
           unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
+          showUnselectedLabels: false,
+          showSelectedLabels: false,
           type: BottomNavigationBarType.fixed,
           onTap: (index) {
             ref.read(indexPage.notifier).state = index;
