@@ -28,6 +28,19 @@ class MonitoringPage extends StatelessWidget {
                   barGroups: _getBarGroupsQuantidade(),
                   titlesData: _getTitlesData(),
                   borderData: FlBorderData(show: false),
+                  gridData: FlGridData(show: true),
+                  barTouchData: BarTouchData(
+                    touchTooltipData: BarTouchTooltipData(
+                      tooltipBgColor: Colors.blueAccent,
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        return BarTooltipItem(
+                          produtos[group.x.toInt()].nome +
+                              '\nQuantidade: ${rod.y}',
+                          const TextStyle(color: Colors.white),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -43,6 +56,19 @@ class MonitoringPage extends StatelessWidget {
                   barGroups: _getBarGroupsFaturamento(),
                   titlesData: _getTitlesData(),
                   borderData: FlBorderData(show: false),
+                  gridData: FlGridData(show: true),
+                  barTouchData: BarTouchData(
+                    touchTooltipData: BarTouchTooltipData(
+                      tooltipBgColor: Colors.greenAccent,
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        return BarTooltipItem(
+                          produtos[group.x.toInt()].nome +
+                              '\nFaturamento: R\$ ${rod.y.toStringAsFixed(2)}',
+                          const TextStyle(color: Colors.white),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -61,7 +87,11 @@ class MonitoringPage extends StatelessWidget {
         x: index,
         barRods: [
           BarChartRodData(
-              toY: produto.quantidade.toDouble(), color: Colors.blue),
+            y: produto.quantidade.toDouble(),
+            colors: [Colors.blue],
+            width: 16,
+            borderRadius: BorderRadius.circular(4),
+          ),
         ],
       );
     }).toList();
@@ -76,7 +106,12 @@ class MonitoringPage extends StatelessWidget {
       return BarChartGroupData(
         x: index,
         barRods: [
-          BarChartRodData(toY: faturamento, color: Colors.green),
+          BarChartRodData(
+            y: faturamento,
+            colors: [Colors.green],
+            width: 16,
+            borderRadius: BorderRadius.circular(4),
+          ),
         ],
       );
     }).toList();
@@ -85,22 +120,21 @@ class MonitoringPage extends StatelessWidget {
   // Configura os rótulos do eixo X
   FlTitlesData _getTitlesData() {
     return FlTitlesData(
-      leftTitles: AxisTitles(
-        sideTitles: SideTitles(showTitles: true),
+      leftTitles: SideTitles(
+        showTitles: true,
+        reservedSize: 40,
+        getTitles: (value) {
+          return value.toInt().toString();
+        },
       ),
-      bottomTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          getTitlesWidget: (value, meta) {
-            if (value.toInt() >= 0 && value.toInt() < produtos.length) {
-              return Text(
-                produtos[value.toInt()].nome,
-                style: const TextStyle(fontSize: 12),
-              );
-            }
-            return const Text('');
-          },
-        ),
+      bottomTitles: SideTitles(
+        showTitles: true,
+        getTitles: (value) {
+          if (value.toInt() >= 0 && value.toInt() < produtos.length) {
+            return produtos[value.toInt()].nome;
+          }
+          return '';
+        },
       ),
     );
   }
