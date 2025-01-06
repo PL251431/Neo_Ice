@@ -15,6 +15,8 @@ class AdicionarVendaPage extends ConsumerStatefulWidget {
 
 class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _quantidadeController = TextEditingController();
+
   int? _produtoId;
   int? _vendedorId;
   DateTime _dataVenda = DateTime.now();
@@ -56,28 +58,44 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
               const SizedBox(height: 16),
 
               // Dropdown de Vendedores
-    
-                    DropdownButtonFormField<int>(
-               value: _vendedorId,
-                    items: vendedoresAsync
-                        .map((vendedor) => DropdownMenuItem(
-                              value: vendedor.id,
-                              child: Text(vendedor.nome),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _vendedorId = value;
-                      });
-                    },
-                    decoration: const InputDecoration(labelText: 'Vendedor'),
-                    validator: (value) => value == null
-                        ? 'Por favor, selecione um vendedor'
-                        : null,
-                  ),
+
+              DropdownButtonFormField<int>(
+                value: _vendedorId,
+                items: vendedoresAsync
+                    .map((vendedor) => DropdownMenuItem(
+                          value: vendedor.id,
+                          child: Text(vendedor.nome),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _vendedorId = value;
+                  });
+                },
+                decoration: const InputDecoration(labelText: 'Vendedor'),
+                validator: (value) =>
+                    value == null ? 'Por favor, selecione um vendedor' : null,
+              ),
 
               const SizedBox(height: 16),
 
+// Campo de Quantidade
+              TextFormField(
+                controller: _quantidadeController,
+                decoration: const InputDecoration(labelText: 'Quantidade'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira a quantidade';
+                  }
+                  if (int.tryParse(value) == null || int.parse(value) <= 0) {
+                    return 'Quantidade deve ser um número positivo';
+                  }
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 16),
               // Seleção de Data
               Row(
                 children: [
