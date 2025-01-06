@@ -15,6 +15,8 @@ class AdicionarVendaPage extends ConsumerStatefulWidget {
 
 class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _quantidadeController = TextEditingController();
+
   int? _produtoId;
   int? _vendedorId;
   DateTime _dataVenda = DateTime.now();
@@ -56,28 +58,44 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
               const SizedBox(height: 16),
 
               // Dropdown de Vendedores
-    
-                    DropdownButtonFormField<int>(
-               value: _vendedorId,
-                    items: vendedoresAsync
-                        .map((vendedor) => DropdownMenuItem(
-                              value: vendedor.id,
-                              child: Text(vendedor.nome),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _vendedorId = value;
-                      });
-                    },
-                    decoration: const InputDecoration(labelText: 'Vendedor'),
-                    validator: (value) => value == null
-                        ? 'Por favor, selecione um vendedor'
-                        : null,
-                  ),
+
+              DropdownButtonFormField<int>(
+                value: _vendedorId,
+                items: vendedoresAsync
+                    .map((vendedor) => DropdownMenuItem(
+                          value: vendedor.id,
+                          child: Text(vendedor.nome),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _vendedorId = value;
+                  });
+                },
+                decoration: const InputDecoration(labelText: 'Vendedor'),
+                validator: (value) =>
+                    value == null ? 'Por favor, selecione um vendedor' : null,
+              ),
 
               const SizedBox(height: 16),
 
+// Campo de Quantidade
+              TextFormField(
+                controller: _quantidadeController,
+                decoration: const InputDecoration(labelText: 'Quantidade'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira a quantidade';
+                  }
+                  if (int.tryParse(value) == null || int.parse(value) <= 0) {
+                    return 'Quantidade deve ser um número positivo';
+                  }
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 16),
               // Seleção de Data
               Row(
                 children: [
@@ -110,10 +128,16 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
+                    final produto = produtosAsync.firstWhere(
+                        (p) => p.id == _produtoId); // Encontre o produto
+                    final quantidade = int.parse(_quantidadeController.text);
+                    final valorTotal =
+                        produto.valor * quantidade; // Calcule o valor total
+
                     final venda = VendasCompanion(
                       produtoId: drift.Value(_produtoId!),
                       vendedorId: drift.Value(_vendedorId!),
-                      valor: drift.Value(100.00), // Ajuste conforme necessário
+                      valor: drift.Value(valorTotal), // Use o valor calculado
                       data: drift.Value(_dataVenda),
                     );
                     ref.read(vendaProvider.notifier).adicionarVenda(venda);
