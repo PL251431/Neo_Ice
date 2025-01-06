@@ -19,12 +19,9 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       title: 'Neo Ice',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          colorScheme:
-              MaterialTheme.lightMediumContrastScheme()), // Aplica o tema claro
-      darkTheme: ThemeData(
-          colorScheme:
-              MaterialTheme.darkMediumContrastScheme()), // Aplica o tema escuro
+      theme: ThemeData(colorScheme: MaterialTheme.lightMediumContrastScheme()),
+      darkTheme:
+          ThemeData(colorScheme: MaterialTheme.darkMediumContrastScheme()),
       themeMode: theme,
       home: const InitialScreen(),
     );
