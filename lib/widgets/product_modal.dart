@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neo_ice/providers/produto_provider.dart';
-import 'package:neo_ice/providers/vendedor_provider.dart';
 
 class ProdutcModal extends ConsumerWidget {
   final int id;
@@ -62,8 +60,8 @@ class ProdutcModal extends ConsumerWidget {
                             child: const Text('Excluir'),
                             onPressed: () {
                               ref
-                                  .read(vendedorProvider.notifier)
-                                  .excluirVendedor(produto.id);
+                                  .read(produtoProvider.notifier)
+                                  .excluirProduto(produto.id);
 
                               Navigator.of(context).pop();
                             }),
