@@ -38,7 +38,10 @@ class InitialScreen extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Neo Ice'),
+          title: const Text(
+            'Neo Ice',
+            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+          ),
           actions: [
             mode == true
                 ? const Icon(Icons.sunny)
@@ -74,6 +77,8 @@ class InitialScreen extends ConsumerWidget {
           currentIndex: ref.watch(indexPage),
           selectedItemColor: Colors.lightBlueAccent,
           unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
+          type: BottomNavigationBarType.fixed,
           onTap: (index) {
             ref.read(indexPage.notifier).state = index;
           },
