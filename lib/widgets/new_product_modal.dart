@@ -68,7 +68,7 @@ class _AdicionarProdutoModalState extends State<AdicionarProdutoModal> {
               key: _formKey,
               child: ListView(
                 shrinkWrap:
-                    true, // Permite que o conteúdo da lista seja scrollable dentro do modal
+                    true,
                 children: [
                   TextFormField(
                     controller: _nomeController,
