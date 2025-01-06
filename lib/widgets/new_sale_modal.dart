@@ -128,10 +128,16 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
+                    final produto = produtosAsync.firstWhere(
+                        (p) => p.id == _produtoId); // Encontre o produto
+                    final quantidade = int.parse(_quantidadeController.text);
+                    final valorTotal =
+                        produto.valor * quantidade; // Calcule o valor total
+
                     final venda = VendasCompanion(
                       produtoId: drift.Value(_produtoId!),
                       vendedorId: drift.Value(_vendedorId!),
-                      valor: drift.Value(100.00), // Ajuste conforme necessário
+                      valor: drift.Value(valorTotal), // Use o valor calculado
                       data: drift.Value(_dataVenda),
                     );
                     ref.read(vendaProvider.notifier).adicionarVenda(venda);

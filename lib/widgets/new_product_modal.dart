@@ -12,6 +12,7 @@ class AdicionarProdutoModal extends StatefulWidget {
   const AdicionarProdutoModal({super.key, required this.db});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AdicionarProdutoModalState createState() => _AdicionarProdutoModalState();
 }
 
@@ -50,6 +51,7 @@ class _AdicionarProdutoModalState extends State<AdicionarProdutoModal> {
 
       await widget.db.inserirProduto(produto); // Salvar no banco
       await ref.read(produtoProvider.notifier).carregarProdutos();
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     }
   }
