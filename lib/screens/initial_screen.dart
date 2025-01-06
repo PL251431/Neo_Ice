@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neo_ice/providers/riverpod.dart';
-import 'package:neo_ice/screens/charts_screen.dart';
-import 'package:neo_ice/screens/products_screen.dart';
-import 'package:neo_ice/screens/listar_vendas_page.dart';
-import 'package:neo_ice/screens/listar_vendedores_page.dart'; // Importe a tela de vendedores
+import 'package:neo_ice/screens/monitoring_page.dart';
+import 'package:neo_ice/screens/products_list_page.dart';
+import 'package:neo_ice/screens/sale_list_page.dart';
+import 'package:neo_ice/screens/collaborators_list_page.dart';
 import 'package:neo_ice/database/app_database.dart';
 
 class InitialScreen extends ConsumerWidget {
@@ -12,13 +12,11 @@ class InitialScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Observar o modo claro/escuro
     bool mode = ref.watch(lightMode);
-
-    // Array com as telas (usando FutureBuilder para os gráficos)
     final List<Widget> screens = [
-      const ListarProdutosPage(),
-      const ListarVendasPage(),
+      const ProdutcsListPage(),
+      const SalesListPage(),
+      const CollaboratorListPage(),
       FutureBuilder<List<Produto>>(
         future: AppDatabase().listarProdutos(),
         builder: (context, snapshot) {
@@ -31,7 +29,7 @@ class InitialScreen extends ConsumerWidget {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('Nenhum produto disponível.'));
           }
-          return ChartsScreen(produtos: snapshot.data!);
+          return MonitoringPage(produtos: snapshot.data!);
         },
       ),
     ];
@@ -40,7 +38,10 @@ class InitialScreen extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Neo Ice'),
+          title: const Text(
+            'Neo Ice',
+            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+          ),
           actions: [
             mode == true
                 ? const Icon(Icons.sunny)
@@ -51,21 +52,9 @@ class InitialScreen extends ConsumerWidget {
                 ref.read(lightMode.notifier).state = newMode;
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.people), // Ícone de pessoas
-              onPressed: () {
-                // Navegar para a tela de vendedores
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ListarVendedoresPage(),
-                  ),
-                );
-              },
-            ),
           ],
         ),
-        body: screens[ref.watch(indexPage)], // Exibe a tela correspondente
+        body: screens[ref.watch(indexPage)],
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -77,11 +66,19 @@ class InitialScreen extends ConsumerWidget {
               label: 'Vendas',
             ),
             BottomNavigationBarItem(
+              icon: Icon(Icons.people),
+              label: 'Vendedores',
+            ),
+            BottomNavigationBarItem(
               icon: Icon(Icons.equalizer),
               label: 'Monitoramento',
             ),
           ],
-          currentIndex: ref.watch(indexPage), // Índice da página ativa
+          currentIndex: ref.watch(indexPage),
+          selectedItemColor: Colors.lightBlueAccent,
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
+          type: BottomNavigationBarType.fixed,
           onTap: (index) {
             ref.read(indexPage.notifier).state = index;
           },

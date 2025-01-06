@@ -26,4 +26,12 @@ class ProdutoNotifier extends StateNotifier<List<Produto>> {
     await _db.excluirProduto(id);
     await carregarProdutos(); // Atualiza a lista
   }
+
+  Produto? obterProdutoPorId(int id) {
+    try {
+      return state.firstWhere((produto) => produto.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
 }
