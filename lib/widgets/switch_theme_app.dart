@@ -16,7 +16,6 @@ class SwitchThemeApp extends ConsumerWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Ícone mudando com o estado do tema
             Icon(
               isLightMode ? Icons.light_mode : Icons.dark_mode,
               size: 30,

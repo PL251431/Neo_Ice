@@ -15,24 +15,38 @@ class SalesListPage extends ConsumerWidget {
 
     return Stack(
       children: [
-        vendas.isEmpty
-            ? const Center(child: Text('Nenhuma venda encontrada.'))
-            : ListView.builder(
-                itemCount: vendas.length,
-                itemBuilder: (context, index) {
-                  final venda = vendas[index];
-                  return GestureDetector(
-                    onTap: () {
-                      mostrarSaleModal(context, AppDatabase(), venda.id);
-                    },
-                    child: SaleCard(
-                      venda: venda.id,
-                      valor: venda.valor,
-                      data: venda.data,
-                    ),
-                  );
-                },
-              ),
+        const Positioned(
+          top: 20,
+          left: 20,
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              'VENDAS',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        Positioned.fill(
+          top: 60,
+          child: vendas.isEmpty
+              ? const Center(child: Text('Nenhuma venda encontrada.'))
+              : ListView.builder(
+                  itemCount: vendas.length,
+                  itemBuilder: (context, index) {
+                    final venda = vendas[index];
+                    return GestureDetector(
+                      onTap: () {
+                        mostrarSaleModal(context, AppDatabase(), venda.id);
+                      },
+                      child: SaleCard(
+                        venda: venda.id,
+                        valor: venda.valor,
+                        data: venda.data,
+                      ),
+                    );
+                  },
+                ),
+        ),
         Positioned(
           bottom: 20,
           right: 20,
