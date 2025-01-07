@@ -13,6 +13,7 @@ class MonitoringPage extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _MonitoringPageState createState() => _MonitoringPageState();
 }
 
@@ -168,8 +169,9 @@ class _MonitoringPageState extends State<MonitoringPage> {
     // Ajustando o intervalo para um valor conveniente com base no valor máximo
     double interval =
         maxValue / 5; // Divide o valor máximo por 5 para ter 5 unidades
-    if (interval < 1)
+    if (interval < 1) {
       interval = 1; // Garantir que o intervalo não seja menor que 1
+    }
     return interval;
   }
 
