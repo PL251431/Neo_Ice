@@ -41,24 +41,18 @@ class _MonitoringPageState extends State<MonitoringPage> {
           widget.produtos
               .firstWhere((produto) => produto.id == produtoId)
               .valor;
-
-      // Atualizando a quantidade vendida
       if (quantidadeVendidaPorProduto.containsKey(produtoId)) {
         quantidadeVendidaPorProduto[produtoId] =
             quantidadeVendidaPorProduto[produtoId]! + quantidadeVendida;
       } else {
         quantidadeVendidaPorProduto[produtoId] = quantidadeVendida;
       }
-
-      // Atualizando o faturamento
       if (faturamentoPorProduto.containsKey(produtoId)) {
         faturamentoPorProduto[produtoId] =
             faturamentoPorProduto[produtoId]! + venda.valor;
       } else {
         faturamentoPorProduto[produtoId] = venda.valor;
       }
-
-      // Calculando os valores máximos para ajuste de intervalo
       if (quantidadeVendida > maxQuantidadeVendida) {
         maxQuantidadeVendida = quantidadeVendida;
       }
@@ -153,30 +147,27 @@ class _MonitoringPageState extends State<MonitoringPage> {
         barRods: [
           BarChartRodData(
             y: yValue,
-            width: 32,
+            width: 16,
             borderRadius: BorderRadius.circular(4),
             colors: [
               color
-            ], // Aqui, usamos a propriedade colors para definir a cor
+            ],
           ),
         ],
       );
     }).toList();
   }
 
-  // Método que ajusta o intervalo de acordo com o máximo valor de cada gráfico
   double _calculateInterval(double maxValue) {
-    // Ajustando o intervalo para um valor conveniente com base no valor máximo
     double interval =
-        maxValue / 5; // Divide o valor máximo por 5 para ter 5 unidades
+        maxValue / 5; 
     if (interval < 1) {
-      interval = 1; // Garantir que o intervalo não seja menor que 1
+      interval = 1;
     }
     return interval;
   }
 
   FlTitlesData _getTitlesData({required bool isQuantidade}) {
-    // Calcular o intervalo com base no gráfico
     double interval = isQuantidade
         ? _calculateInterval(maxQuantidadeVendida)
         : _calculateInterval(maxFaturamento);
@@ -188,7 +179,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
         getTitles: (value) {
           return value.toInt().toString();
         },
-        interval: interval, // Usando o intervalo calculado para cada gráfico
+        interval: interval,
       ),
       bottomTitles: SideTitles(
         showTitles: true,

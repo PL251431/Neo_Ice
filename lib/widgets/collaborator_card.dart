@@ -18,20 +18,23 @@ class CollaboratorCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SizedBox(
-          height: 80,
           child: Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Text(
-                  'Vendor: $nome',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                CircleAvatar(
+                  radius: 40,
+                  child: Icon(
+                    Icons.person_2,
+                    size: 40,
+                  ),
                 ),
-                Text(
-                  'Telefone: $numero',
-                  style: TextStyle(fontSize: 16),
-                )
+                Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Text(
+                    nome,
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  ),
+                ),
               ],
             ),
           ),

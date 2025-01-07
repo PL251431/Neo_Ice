@@ -6,7 +6,6 @@ import 'package:neo_ice/database/app_database.dart';
 
 class NewCollaboratorModal extends ConsumerWidget {
   final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
 
   NewCollaboratorModal({super.key});
 
@@ -27,13 +26,9 @@ class NewCollaboratorModal extends ConsumerWidget {
               controller: _nomeController,
               decoration: const InputDecoration(labelText: 'Nome'),
             ),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
             const SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 TextButton(
                   onPressed: () {

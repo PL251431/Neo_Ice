@@ -27,8 +27,9 @@ class CollaboratorModal extends ConsumerWidget {
                     'Nome: ${vendedor.nome}',
                     style: TextStyle(fontSize: 20),
                   ),
+                  Divider(),
                   Text(
-                    'id: ${vendedor.id}',
+                    'ID Colaborador: ${vendedor.id}',
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(
