@@ -27,4 +27,12 @@ class VendaNotifier extends StateNotifier<List<Venda>> {
     await db.excluirVenda(id);
     carregarVendas();
   }
+
+  Venda? obterVendaPorId(int id) {
+    try {
+      return state.firstWhere((venda) => venda.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
 }
