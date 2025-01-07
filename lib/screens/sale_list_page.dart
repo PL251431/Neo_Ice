@@ -18,12 +18,9 @@ class SalesListPage extends ConsumerWidget {
         const Positioned(
           top: 20,
           left: 20,
-          child: Align(
-            alignment: Alignment.center,
-            child: Text(
-              'VENDAS',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+          child: Text(
+            'VENDAS',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
         Positioned.fill(
