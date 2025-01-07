@@ -6,6 +6,7 @@ import 'package:neo_ice/screens/products_list_page.dart';
 import 'package:neo_ice/screens/sale_list_page.dart';
 import 'package:neo_ice/screens/collaborators_list_page.dart';
 import 'package:neo_ice/database/app_database.dart';
+import 'package:neo_ice/widgets/switch_theme_app.dart';
 
 class InitialScreen extends ConsumerWidget {
   const InitialScreen({super.key});
@@ -23,9 +24,11 @@ class InitialScreen extends ConsumerWidget {
             return const Center(child: CircularProgressIndicator());
           } else if (produtoSnapshot.hasError) {
             return Center(
-              child: Text('Erro ao carregar produtos: ${produtoSnapshot.error}'),
+              child:
+                  Text('Erro ao carregar produtos: ${produtoSnapshot.error}'),
             );
-          } else if (!produtoSnapshot.hasData || produtoSnapshot.data!.isEmpty) {
+          } else if (!produtoSnapshot.hasData ||
+              produtoSnapshot.data!.isEmpty) {
             return const Center(child: Text('Nenhum produto disponível.'));
           }
 
@@ -36,13 +39,14 @@ class InitialScreen extends ConsumerWidget {
                 return const Center(child: CircularProgressIndicator());
               } else if (vendaSnapshot.hasError) {
                 return Center(
-                  child: Text('Erro ao carregar vendas: ${vendaSnapshot.error}'),
+                  child:
+                      Text('Erro ao carregar vendas: ${vendaSnapshot.error}'),
                 );
-              } else if (!vendaSnapshot.hasData || vendaSnapshot.data!.isEmpty) {
+              } else if (!vendaSnapshot.hasData ||
+                  vendaSnapshot.data!.isEmpty) {
                 return const Center(child: Text('Nenhuma venda realizada.'));
               }
 
-              // Quando tanto produtos quanto vendas estiverem disponíveis
               return MonitoringPage(
                 produtos: produtoSnapshot.data!,
                 vendas: vendaSnapshot.data!,
@@ -61,14 +65,7 @@ class InitialScreen extends ConsumerWidget {
             'Neo Ice',
             style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
           ),
-          actions: [
-            Switch(
-              value: ref.watch(lightModeProvider),
-              onChanged: (value) {
-                ref.read(lightModeProvider.notifier).toggleTheme();
-              },
-            ),
-          ],
+          actions: [SwitchThemeApp()],
         ),
         body: screens[ref.watch(indexPage)],
         bottomNavigationBar: BottomNavigationBar(
