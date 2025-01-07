@@ -25,7 +25,7 @@ class MonitoringPage extends StatelessWidget {
             Expanded(
               child: BarChart(
                 BarChartData(
-                  barGroups: _getBarGroupsQuantidade(),
+                  barGroups: _getBarGroups(isQuantidade: true),
                   titlesData: _getTitlesData(),
                   borderData: FlBorderData(show: false),
                   gridData: FlGridData(show: true),
@@ -34,8 +34,7 @@ class MonitoringPage extends StatelessWidget {
                       tooltipBgColor: Colors.blueAccent,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
-                          produtos[group.x.toInt()].nome +
-                              '\nQuantidade: ${rod.y}',
+                          '${produtos[group.x.toInt()].nome}\nQuantidade: ${rod.y}',
                           const TextStyle(color: Colors.white),
                         );
                       },
@@ -53,7 +52,7 @@ class MonitoringPage extends StatelessWidget {
             Expanded(
               child: BarChart(
                 BarChartData(
-                  barGroups: _getBarGroupsFaturamento(),
+                  barGroups: _getBarGroups(isQuantidade: false),
                   titlesData: _getTitlesData(),
                   borderData: FlBorderData(show: false),
                   gridData: FlGridData(show: true),
@@ -62,8 +61,7 @@ class MonitoringPage extends StatelessWidget {
                       tooltipBgColor: Colors.greenAccent,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
-                          produtos[group.x.toInt()].nome +
-                              '\nFaturamento: R\$ ${rod.y.toStringAsFixed(2)}',
+                          '${produtos[group.x.toInt()].nome}\nFaturamento: R\$ ${rod.y.toStringAsFixed(2)}',
                           const TextStyle(color: Colors.white),
                         );
                       },
@@ -78,17 +76,20 @@ class MonitoringPage extends StatelessWidget {
     );
   }
 
-  // Cria as barras para o gráfico de quantidade
-  List<BarChartGroupData> _getBarGroupsQuantidade() {
+  List<BarChartGroupData> _getBarGroups({required bool isQuantidade}) {
     return produtos.asMap().entries.map((entry) {
       final index = entry.key;
       final produto = entry.value;
+      final yValue = isQuantidade
+          ? produto.quantidade.toDouble()
+          : produto.quantidade * produto.valor;
+      final color = isQuantidade ? Colors.blue : Colors.green;
+
       return BarChartGroupData(
         x: index,
         barRods: [
           BarChartRodData(
-            y: produto.quantidade.toDouble(),
-            colors: [Colors.blue],
+            y: yValue,
             width: 16,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -97,27 +98,6 @@ class MonitoringPage extends StatelessWidget {
     }).toList();
   }
 
-  // Cria as barras para o gráfico de faturamento
-  List<BarChartGroupData> _getBarGroupsFaturamento() {
-    return produtos.asMap().entries.map((entry) {
-      final index = entry.key;
-      final produto = entry.value;
-      final faturamento = produto.quantidade * produto.valor;
-      return BarChartGroupData(
-        x: index,
-        barRods: [
-          BarChartRodData(
-            y: faturamento,
-            colors: [Colors.green],
-            width: 16,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ],
-      );
-    }).toList();
-  }
-
-  // Configura os rótulos do eixo X
   FlTitlesData _getTitlesData() {
     return FlTitlesData(
       leftTitles: SideTitles(
