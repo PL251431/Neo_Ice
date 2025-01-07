@@ -41,7 +41,7 @@ class ProdutcModal extends ConsumerWidget {
                     style: TextStyle(fontSize: 20),
                   ),
                   Text(
-                    'Valor: ${produto.valor}',
+                    'Valor: R\$ ${produto.valor}',
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(
