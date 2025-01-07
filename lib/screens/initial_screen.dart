@@ -12,7 +12,6 @@ class InitialScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool mode = ref.watch(lightMode);
     final List<Widget> screens = [
       const ProdutcsListPage(),
       const SalesListPage(),
@@ -43,13 +42,10 @@ class InitialScreen extends ConsumerWidget {
             style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
           ),
           actions: [
-            mode == true
-                ? const Icon(Icons.sunny)
-                : const Icon(Icons.dark_mode),
             Switch(
-              value: mode,
-              onChanged: (newMode) {
-                ref.read(lightMode.notifier).state = newMode;
+              value: ref.watch(lightModeProvider),
+              onChanged: (value) {
+                ref.read(lightModeProvider.notifier).toggleTheme();
               },
             ),
           ],
