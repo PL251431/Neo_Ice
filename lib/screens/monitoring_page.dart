@@ -19,6 +19,8 @@ class MonitoringPage extends StatefulWidget {
 class _MonitoringPageState extends State<MonitoringPage> {
   late Map<int, double> quantidadeVendidaPorProduto;
   late Map<int, double> faturamentoPorProduto;
+  late double maxQuantidadeVendida;
+  late double maxFaturamento;
 
   @override
   void initState() {
@@ -29,23 +31,38 @@ class _MonitoringPageState extends State<MonitoringPage> {
   void _calcularVendas() {
     quantidadeVendidaPorProduto = {};
     faturamentoPorProduto = {};
+    maxQuantidadeVendida = 0.0;
+    maxFaturamento = 0.0;
 
     for (var venda in widget.vendas) {
       final produtoId = venda.produtoId;
-      final quantidadeVendida = venda.valor / widget.produtos.firstWhere((produto) => produto.id == produtoId).valor;
+      final quantidadeVendida = venda.valor /
+          widget.produtos
+              .firstWhere((produto) => produto.id == produtoId)
+              .valor;
 
       // Atualizando a quantidade vendida
       if (quantidadeVendidaPorProduto.containsKey(produtoId)) {
-        quantidadeVendidaPorProduto[produtoId] = quantidadeVendidaPorProduto[produtoId]! + quantidadeVendida;
+        quantidadeVendidaPorProduto[produtoId] =
+            quantidadeVendidaPorProduto[produtoId]! + quantidadeVendida;
       } else {
         quantidadeVendidaPorProduto[produtoId] = quantidadeVendida;
       }
 
       // Atualizando o faturamento
       if (faturamentoPorProduto.containsKey(produtoId)) {
-        faturamentoPorProduto[produtoId] = faturamentoPorProduto[produtoId]! + venda.valor;
+        faturamentoPorProduto[produtoId] =
+            faturamentoPorProduto[produtoId]! + venda.valor;
       } else {
         faturamentoPorProduto[produtoId] = venda.valor;
+      }
+
+      // Calculando os valores máximos para ajuste de intervalo
+      if (quantidadeVendida > maxQuantidadeVendida) {
+        maxQuantidadeVendida = quantidadeVendida;
+      }
+      if (venda.valor > maxFaturamento) {
+        maxFaturamento = venda.valor;
       }
     }
   }
@@ -69,7 +86,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
               child: BarChart(
                 BarChartData(
                   barGroups: _getBarGroups(isQuantidade: true),
-                  titlesData: _getTitlesData(),
+                  titlesData: _getTitlesData(isQuantidade: true),
                   borderData: FlBorderData(show: false),
                   gridData: FlGridData(show: true),
                   barTouchData: BarTouchData(
@@ -77,8 +94,8 @@ class _MonitoringPageState extends State<MonitoringPage> {
                       tooltipBgColor: Colors.blueAccent,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
-                          '${widget.produtos[group.x.toInt()].nome}\nQuantidade: ${rod.y}',
-                          const TextStyle(color: Colors.white),
+                          'Quantidade: ${rod.y}',
+                          const TextStyle(color: Colors.black),
                         );
                       },
                     ),
@@ -96,7 +113,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
               child: BarChart(
                 BarChartData(
                   barGroups: _getBarGroups(isQuantidade: false),
-                  titlesData: _getTitlesData(),
+                  titlesData: _getTitlesData(isQuantidade: false),
                   borderData: FlBorderData(show: false),
                   gridData: FlGridData(show: true),
                   barTouchData: BarTouchData(
@@ -104,8 +121,8 @@ class _MonitoringPageState extends State<MonitoringPage> {
                       tooltipBgColor: Colors.greenAccent,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
-                          '${widget.produtos[group.x.toInt()].nome}\nFaturamento: R\$ ${rod.y.toStringAsFixed(2)}',
-                          const TextStyle(color: Colors.white),
+                          'Faturamento: R\$ ${rod.y.toStringAsFixed(2)}',
+                          const TextStyle(color: Colors.black),
                         );
                       },
                     ),
@@ -137,14 +154,31 @@ class _MonitoringPageState extends State<MonitoringPage> {
             y: yValue,
             width: 16,
             borderRadius: BorderRadius.circular(4),
-            colors: [color], // Aqui, usamos a propriedade colors para definir a cor
+            colors: [
+              color
+            ], // Aqui, usamos a propriedade colors para definir a cor
           ),
         ],
       );
     }).toList();
   }
 
-  FlTitlesData _getTitlesData() {
+  // Método que ajusta o intervalo de acordo com o máximo valor de cada gráfico
+  double _calculateInterval(double maxValue) {
+    // Ajustando o intervalo para um valor conveniente com base no valor máximo
+    double interval =
+        maxValue / 5; // Divide o valor máximo por 5 para ter 5 unidades
+    if (interval < 1)
+      interval = 1; // Garantir que o intervalo não seja menor que 1
+    return interval;
+  }
+
+  FlTitlesData _getTitlesData({required bool isQuantidade}) {
+    // Calcular o intervalo com base no gráfico
+    double interval = isQuantidade
+        ? _calculateInterval(maxQuantidadeVendida)
+        : _calculateInterval(maxFaturamento);
+
     return FlTitlesData(
       leftTitles: SideTitles(
         showTitles: true,
@@ -152,6 +186,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
         getTitles: (value) {
           return value.toInt().toString();
         },
+        interval: interval, // Usando o intervalo calculado para cada gráfico
       ),
       bottomTitles: SideTitles(
         showTitles: true,
