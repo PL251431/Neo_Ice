@@ -24,7 +24,7 @@ class ProdutoNotifier extends StateNotifier<List<Produto>> {
 
   Future<void> excluirProduto(int id) async {
     await _db.excluirProduto(id);
-    await carregarProdutos(); // Atualiza a lista
+    await carregarProdutos();
   }
 
   Produto? obterProdutoPorId(int id) {

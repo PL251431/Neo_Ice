@@ -20,12 +20,12 @@ class VendedorNotifier extends StateNotifier<List<Vendedor>> {
 
   Future<void> adicionarVendedor(VendedoresCompanion vendedor) async {
     await _db.inserirVendedor(vendedor);
-    await carregarVendedores(); // Atualiza a lista
+    await carregarVendedores();
   }
 
   Future<void> excluirVendedor(int id) async {
     await _db.excluirVendedor(id);
-    await carregarVendedores(); // Atualiza a lista
+    await carregarVendedores(); 
   }
 
   Vendedor? obterVendedorPorId(int id) {

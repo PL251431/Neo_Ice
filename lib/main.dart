@@ -16,7 +16,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Obtém o estado atual do tema (claro ou escuro)
     final isLightMode = ref.watch(lightModeProvider);
 
     return MaterialApp(

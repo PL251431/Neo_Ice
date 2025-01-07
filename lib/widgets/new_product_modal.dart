@@ -49,7 +49,7 @@ class _AdicionarProdutoModalState extends State<AdicionarProdutoModal> {
         quantidade: drift.Value(quantidade),
       );
 
-      await widget.db.inserirProduto(produto); // Salvar no banco
+      await widget.db.inserirProduto(produto);
       await ref.read(produtoProvider.notifier).carregarProdutos();
       // ignore: use_build_context_synchronously
       Navigator.pop(context);

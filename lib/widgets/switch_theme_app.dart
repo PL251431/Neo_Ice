@@ -7,7 +7,6 @@ class SwitchThemeApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Obtendo o valor do tema (modo claro ou escuro) a partir do Riverpod
     final isLightMode = ref.watch(lightModeProvider);
 
     return Column(

@@ -21,8 +21,6 @@ class SaleModal extends ConsumerWidget {
     final vendedor = ref
         .watch(vendedorProvider.notifier)
         .obterVendedorPorId(venda.vendedorId);
-
-    // Formatação da data
     String dataFormatada = DateFormat('dd/MM/yyyy').format(venda.data);
 
     return Dialog(

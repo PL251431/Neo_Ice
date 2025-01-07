@@ -45,8 +45,6 @@ class _AdicionarVendaDialogState extends ConsumerState<NewSaleModal> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Dropdown de Produtos
               DropdownButtonFormField<int>(
                 value: _produtoId,
                 items: produtosAsync
@@ -64,10 +62,7 @@ class _AdicionarVendaDialogState extends ConsumerState<NewSaleModal> {
                 validator: (value) =>
                     value == null ? 'Por favor, selecione um produto' : null,
               ),
-
               const SizedBox(height: 16),
-
-              // Dropdown de Vendedores
               DropdownButtonFormField<int>(
                 value: _vendedorId,
                 items: vendedoresAsync
@@ -85,10 +80,7 @@ class _AdicionarVendaDialogState extends ConsumerState<NewSaleModal> {
                 validator: (value) =>
                     value == null ? 'Por favor, selecione um vendedor' : null,
               ),
-
               const SizedBox(height: 16),
-
-              // Campo de Quantidade
               TextFormField(
                 controller: _quantidadeController,
                 decoration: const InputDecoration(labelText: 'Quantidade'),
@@ -103,10 +95,8 @@ class _AdicionarVendaDialogState extends ConsumerState<NewSaleModal> {
                   return null;
                 },
               ),
-
               const SizedBox(height: 16),
 
-              // Seleção de Data
               Row(
                 children: [
                   const Text('Data da Venda:'),
@@ -131,28 +121,25 @@ class _AdicionarVendaDialogState extends ConsumerState<NewSaleModal> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 16),
-
-              // Botão para Adicionar Venda
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     final produto = produtosAsync.firstWhere(
-                        (p) => p.id == _produtoId); // Encontre o produto
+                        (p) => p.id == _produtoId);
                     final quantidade = int.parse(_quantidadeController.text);
                     final valorTotal =
-                        produto.valor * quantidade; // Calcule o valor total
+                        produto.valor * quantidade; 
 
                     final venda = VendasCompanion(
                       produtoId: drift.Value(_produtoId!),
                       vendedorId: drift.Value(_vendedorId!),
-                      valor: drift.Value(valorTotal), // Use o valor calculado
+                      valor: drift.Value(valorTotal),
                       data: drift.Value(_dataVenda),
                     );
                     ref.read(vendaProvider.notifier).adicionarVenda(venda);
                     Navigator.pop(
-                        context); // Fecha o dialog após a venda ser adicionada
+                        context);
                   }
                 },
                 child: const Text('Adicionar Venda'),
