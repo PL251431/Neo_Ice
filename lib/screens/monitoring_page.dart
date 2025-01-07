@@ -64,69 +64,61 @@ class _MonitoringPageState extends State<MonitoringPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gráficos de Produtos'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const Text(
-              'Quantidade Vendida por Produto',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: BarChart(
-                BarChartData(
-                  barGroups: _getBarGroups(isQuantidade: true),
-                  titlesData: _getTitlesData(isQuantidade: true),
-                  borderData: FlBorderData(show: false),
-                  gridData: FlGridData(show: true),
-                  barTouchData: BarTouchData(
-                    touchTooltipData: BarTouchTooltipData(
-                      tooltipBgColor: Colors.blueAccent,
-                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                        return BarTooltipItem(
-                          'Quantidade: ${rod.y}',
-                          const TextStyle(color: Colors.black),
-                        );
-                      },
-                    ),
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        children: [
+          const Text(
+            'Quantidade Vendida por Produto',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: BarChart(
+              BarChartData(
+                barGroups: _getBarGroups(isQuantidade: true),
+                titlesData: _getTitlesData(isQuantidade: true),
+                borderData: FlBorderData(show: false),
+                gridData: FlGridData(show: true),
+                barTouchData: BarTouchData(
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      return BarTooltipItem(
+                        'Quantidade: ${rod.toY}',
+                        const TextStyle(color: Colors.black),
+                      );
+                    },
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 32),
-            const Text(
-              'Faturamento por Produto (R\$)',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: BarChart(
-                BarChartData(
-                  barGroups: _getBarGroups(isQuantidade: false),
-                  titlesData: _getTitlesData(isQuantidade: false),
-                  borderData: FlBorderData(show: false),
-                  gridData: FlGridData(show: true),
-                  barTouchData: BarTouchData(
-                    touchTooltipData: BarTouchTooltipData(
-                      tooltipBgColor: Colors.greenAccent,
-                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                        return BarTooltipItem(
-                          'Faturamento: R\$ ${rod.y.toStringAsFixed(2)}',
-                          const TextStyle(color: Colors.black),
-                        );
-                      },
-                    ),
+          ),
+          const Text(
+            'Faturamento por Produto (R\$)',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: BarChart(
+              BarChartData(
+                barGroups: _getBarGroups(isQuantidade: false),
+                titlesData: _getTitlesData(isQuantidade: false),
+                borderData: FlBorderData(show: false),
+                gridData: FlGridData(show: true),
+                barTouchData: BarTouchData(
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      return BarTooltipItem(
+                        'Faturamento: R\$ ${rod.toY.toStringAsFixed(2)}',
+                        const TextStyle(color: Colors.white),
+                      );
+                    },
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -146,12 +138,10 @@ class _MonitoringPageState extends State<MonitoringPage> {
         x: index,
         barRods: [
           BarChartRodData(
-            y: yValue,
-            width: 16,
+            toY: yValue,
+            width: 30,
             borderRadius: BorderRadius.circular(4),
-            colors: [
-              color
-            ],
+            color: color,
           ),
         ],
       );
@@ -159,8 +149,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
   }
 
   double _calculateInterval(double maxValue) {
-    double interval =
-        maxValue / 5; 
+    double interval = maxValue / 5;
     if (interval < 1) {
       interval = 1;
     }
@@ -173,23 +162,32 @@ class _MonitoringPageState extends State<MonitoringPage> {
         : _calculateInterval(maxFaturamento);
 
     return FlTitlesData(
-      leftTitles: SideTitles(
-        showTitles: true,
-        reservedSize: 40,
-        getTitles: (value) {
-          return value.toInt().toString();
-        },
-        interval: interval,
-      ),
-      bottomTitles: SideTitles(
-        showTitles: true,
-        getTitles: (value) {
-          if (value.toInt() >= 0 && value.toInt() < widget.produtos.length) {
-            return widget.produtos[value.toInt()].nome;
-          }
-          return '';
-        },
-      ),
-    );
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (double value, TitleMeta meta) {
+              return Text(
+                value.toString(),
+                style: TextStyle(fontSize: 12),
+              );
+            },
+            interval: interval,
+          ),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (double value, TitleMeta meta) {
+              if (value.toInt() >= 0 &&
+                  value.toInt() < widget.produtos.length) {
+                return Text(
+                  widget.produtos[value.toInt()].nome,
+                  style: TextStyle(fontSize: 12),
+                );
+              }
+              return Text('');
+            },
+          ),
+        ));
   }
 }
