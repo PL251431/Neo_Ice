@@ -6,14 +6,14 @@ import 'package:neo_ice/providers/produto_provider.dart';
 import 'package:neo_ice/providers/vendedor_provider.dart';
 import 'package:neo_ice/providers/venda_provider.dart';
 
-class AdicionarVendaPage extends ConsumerStatefulWidget {
-  const AdicionarVendaPage({super.key});
+class NewSaleModal extends ConsumerStatefulWidget {
+  const NewSaleModal({super.key});
 
   @override
-  ConsumerState<AdicionarVendaPage> createState() => _AdicionarVendaPageState();
+  ConsumerState<NewSaleModal> createState() => _AdicionarVendaDialogState();
 }
 
-class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
+class _AdicionarVendaDialogState extends ConsumerState<NewSaleModal> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _quantidadeController = TextEditingController();
 
@@ -26,16 +26,26 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
     final produtosAsync = ref.watch(produtoProvider);
     final vendedoresAsync = ref.watch(vendedorProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Adicionar Nova Venda'),
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
       ),
-      body: Padding(
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
+              const Text(
+                'Adicionar Nova Venda',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+
               // Dropdown de Produtos
               DropdownButtonFormField<int>(
                 value: _produtoId,
@@ -58,7 +68,6 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
               const SizedBox(height: 16),
 
               // Dropdown de Vendedores
-
               DropdownButtonFormField<int>(
                 value: _vendedorId,
                 items: vendedoresAsync
@@ -79,7 +88,7 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
 
               const SizedBox(height: 16),
 
-// Campo de Quantidade
+              // Campo de Quantidade
               TextFormField(
                 controller: _quantidadeController,
                 decoration: const InputDecoration(labelText: 'Quantidade'),
@@ -96,6 +105,7 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
               ),
 
               const SizedBox(height: 16),
+
               // Seleção de Data
               Row(
                 children: [
@@ -122,7 +132,7 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
                 ],
               ),
 
-              const Spacer(),
+              const SizedBox(height: 16),
 
               // Botão para Adicionar Venda
               ElevatedButton(
@@ -141,7 +151,8 @@ class _AdicionarVendaPageState extends ConsumerState<AdicionarVendaPage> {
                       data: drift.Value(_dataVenda),
                     );
                     ref.read(vendaProvider.notifier).adicionarVenda(venda);
-                    Navigator.pop(context);
+                    Navigator.pop(
+                        context); // Fecha o dialog após a venda ser adicionada
                   }
                 },
                 child: const Text('Adicionar Venda'),
