@@ -24,6 +24,22 @@ dependencies:
   intl:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  flutter_native_splash: ^2.4.4
+  flutter_launcher_icons: ^0.14.2
+
+flutter_native_splash:
+  color: "#b3ddda"
+  image: "assets/images/splash.jpeg"
+  image_dark: "assets/images/splash.jpeg"
+  android: true
+  web: false
+  ios: false
+
+flutter_icons:
+  android: true
+  image_path: "assets/images/default.png"
+  adaptive_icon_background: "#b3ddda"
+  adaptive_icon_foreground: "assets/images/default.png"
 
 dev_dependencies:
   drift_dev: 

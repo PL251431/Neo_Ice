@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="neo_ice"
+        android:label="Neo Ice"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
