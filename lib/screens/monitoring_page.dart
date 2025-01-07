@@ -153,7 +153,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
         barRods: [
           BarChartRodData(
             y: yValue,
-            width: 16,
+            width: 32,
             borderRadius: BorderRadius.circular(4),
             colors: [
               color
