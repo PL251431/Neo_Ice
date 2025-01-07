@@ -18,17 +18,37 @@ class InitialScreen extends ConsumerWidget {
       const CollaboratorListPage(),
       FutureBuilder<List<Produto>>(
         future: AppDatabase().listarProdutos(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+        builder: (context, produtoSnapshot) {
+          if (produtoSnapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
+          } else if (produtoSnapshot.hasError) {
             return Center(
-              child: Text('Erro ao carregar dados: ${snapshot.error}'),
+              child: Text('Erro ao carregar produtos: ${produtoSnapshot.error}'),
             );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          } else if (!produtoSnapshot.hasData || produtoSnapshot.data!.isEmpty) {
             return const Center(child: Text('Nenhum produto disponível.'));
           }
-          return MonitoringPage(produtos: snapshot.data!);
+
+          return FutureBuilder<List<Venda>>(
+            future: AppDatabase().listarVendas(),
+            builder: (context, vendaSnapshot) {
+              if (vendaSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (vendaSnapshot.hasError) {
+                return Center(
+                  child: Text('Erro ao carregar vendas: ${vendaSnapshot.error}'),
+                );
+              } else if (!vendaSnapshot.hasData || vendaSnapshot.data!.isEmpty) {
+                return const Center(child: Text('Nenhuma venda realizada.'));
+              }
+
+              // Quando tanto produtos quanto vendas estiverem disponíveis
+              return MonitoringPage(
+                produtos: produtoSnapshot.data!,
+                vendas: vendaSnapshot.data!,
+              );
+            },
+          );
         },
       ),
     ];

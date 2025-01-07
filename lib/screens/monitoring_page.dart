@@ -2,10 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:neo_ice/database/app_database.dart';
 
-class MonitoringPage extends StatelessWidget {
+class MonitoringPage extends StatefulWidget {
   final List<Produto> produtos;
+  final List<Venda> vendas;
 
-  const MonitoringPage({super.key, required this.produtos});
+  const MonitoringPage({
+    super.key,
+    required this.produtos,
+    required this.vendas,
+  });
+
+  @override
+  _MonitoringPageState createState() => _MonitoringPageState();
+}
+
+class _MonitoringPageState extends State<MonitoringPage> {
+  late Map<int, double> quantidadeVendidaPorProduto;
+  late Map<int, double> faturamentoPorProduto;
+
+  @override
+  void initState() {
+    super.initState();
+    _calcularVendas();
+  }
+
+  void _calcularVendas() {
+    quantidadeVendidaPorProduto = {};
+    faturamentoPorProduto = {};
+
+    for (var venda in widget.vendas) {
+      final produtoId = venda.produtoId;
+      final quantidadeVendida = venda.valor / widget.produtos.firstWhere((produto) => produto.id == produtoId).valor;
+
+      // Atualizando a quantidade vendida
+      if (quantidadeVendidaPorProduto.containsKey(produtoId)) {
+        quantidadeVendidaPorProduto[produtoId] = quantidadeVendidaPorProduto[produtoId]! + quantidadeVendida;
+      } else {
+        quantidadeVendidaPorProduto[produtoId] = quantidadeVendida;
+      }
+
+      // Atualizando o faturamento
+      if (faturamentoPorProduto.containsKey(produtoId)) {
+        faturamentoPorProduto[produtoId] = faturamentoPorProduto[produtoId]! + venda.valor;
+      } else {
+        faturamentoPorProduto[produtoId] = venda.valor;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +77,7 @@ class MonitoringPage extends StatelessWidget {
                       tooltipBgColor: Colors.blueAccent,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
-                          '${produtos[group.x.toInt()].nome}\nQuantidade: ${rod.y}',
+                          '${widget.produtos[group.x.toInt()].nome}\nQuantidade: ${rod.y}',
                           const TextStyle(color: Colors.white),
                         );
                       },
@@ -61,7 +104,7 @@ class MonitoringPage extends StatelessWidget {
                       tooltipBgColor: Colors.greenAccent,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
-                          '${produtos[group.x.toInt()].nome}\nFaturamento: R\$ ${rod.y.toStringAsFixed(2)}',
+                          '${widget.produtos[group.x.toInt()].nome}\nFaturamento: R\$ ${rod.y.toStringAsFixed(2)}',
                           const TextStyle(color: Colors.white),
                         );
                       },
@@ -77,12 +120,14 @@ class MonitoringPage extends StatelessWidget {
   }
 
   List<BarChartGroupData> _getBarGroups({required bool isQuantidade}) {
-    return produtos.asMap().entries.map((entry) {
+    return widget.produtos.asMap().entries.map((entry) {
       final index = entry.key;
       final produto = entry.value;
+
       final yValue = isQuantidade
-          ? produto.quantidade.toDouble()
-          : produto.quantidade * produto.valor;
+          ? quantidadeVendidaPorProduto[produto.id] ?? 0.0
+          : faturamentoPorProduto[produto.id] ?? 0.0;
+
       final color = isQuantidade ? Colors.blue : Colors.green;
 
       return BarChartGroupData(
@@ -92,6 +137,7 @@ class MonitoringPage extends StatelessWidget {
             y: yValue,
             width: 16,
             borderRadius: BorderRadius.circular(4),
+            colors: [color], // Aqui, usamos a propriedade colors para definir a cor
           ),
         ],
       );
@@ -110,8 +156,8 @@ class MonitoringPage extends StatelessWidget {
       bottomTitles: SideTitles(
         showTitles: true,
         getTitles: (value) {
-          if (value.toInt() >= 0 && value.toInt() < produtos.length) {
-            return produtos[value.toInt()].nome;
+          if (value.toInt() >= 0 && value.toInt() < widget.produtos.length) {
+            return widget.produtos[value.toInt()].nome;
           }
           return '';
         },
